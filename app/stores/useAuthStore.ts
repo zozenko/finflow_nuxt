@@ -1,69 +1,36 @@
-import type {
-  User,
-  LoginCredentials,
-  AuthResponse,
-  RegisterPayload,
-} from "~/types";
+import type { User, AuthResponse } from "~/types";
+
+const getInitialUser = (): User | null => {
+  const saved = localStorage.getItem("auth_user");
+  if (!saved) return null;
+  try {
+    return JSON.parse(saved) as User;
+  } catch {
+    localStorage.removeItem("auth_user");
+    return null;
+  }
+};
 
 export const useAuthStore = defineStore("auth", () => {
-  // --- Context ---
-  const { $services } = useNuxtApp();
-  const { isLoading, execute } = useApi();
-
-  // --- State ---
-  const user = ref<User | null>(null);
+  const user = ref<User | null>(getInitialUser());
   const token = ref<string | null>(localStorage.getItem("auth_token"));
+  const isAuthenticated = computed(() => !!token.value);
 
-  // --- Getters ---
-  const isAuthenticated = computed(() => !!token.value && !!user.value);
-
-  // --- Actions ---
   function setAuth(data: AuthResponse) {
     user.value = data.user;
     token.value = data.token;
     localStorage.setItem("auth_token", data.token);
+    localStorage.setItem("auth_user", JSON.stringify(data.user));
   }
 
   function clearAuth() {
+    const localePath = useLocalePath();
     user.value = null;
     token.value = null;
     localStorage.removeItem("auth_token");
-    const lang = localStorage.getItem("user-lang") || "uk";
-    navigateTo(`/${lang}/login`);
+    localStorage.removeItem("auth_user");
+    navigateTo(localePath("/login"));
   }
 
-  async function register(payload: RegisterPayload) {
-    const data = await execute(() => $services.auth.register(payload));
-    if (data) {
-      setAuth(data);
-      return data;
-    }
-  }
-
-  async function login(credentials: LoginCredentials) {
-    const data = await execute(() => $services.auth.login(credentials));
-    if (data) {
-      setAuth(data);
-      return data;
-    }
-  }
-
-  async function logout() {
-    try {
-      await execute(() => $services.auth.logout());
-    } finally {
-      clearAuth();
-    }
-  }
-
-  return {
-    user,
-    token,
-    isLoading,
-    isAuthenticated,
-    register,
-    login,
-    logout,
-    clearAuth,
-  };
+  return { user, token, isAuthenticated, setAuth, clearAuth };
 });

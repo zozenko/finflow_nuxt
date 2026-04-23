@@ -3,6 +3,10 @@ import type {
   Transaction,
   CreateTransactionData,
   UpdateTransactionData,
+  SumByGroupsParams,
+  SumByGroupsResponse,
+  SumByCategoriesParams,
+  SumByCategoriesResponse,
 } from "~/types";
 
 export const createTransactionService = (api: AxiosInstance) => ({
@@ -27,6 +31,26 @@ export const createTransactionService = (api: AxiosInstance) => ({
   async toggleFavorite(id: number): Promise<{ is_favorite: boolean }> {
     const { data } = await api.patch<{ is_favorite: boolean }>(
       `/transactions/${id}/favorite`,
+    );
+    return data;
+  },
+
+  async getSumByGroups(
+    params: SumByGroupsParams = {},
+  ): Promise<SumByGroupsResponse> {
+    const { data } = await api.get<SumByGroupsResponse>(
+      "/transactions/sum-by-groups",
+      { params },
+    );
+    return data;
+  },
+
+  async getSumByCategories(
+    params: SumByCategoriesParams,
+  ): Promise<SumByCategoriesResponse> {
+    const { data } = await api.get<SumByCategoriesResponse>(
+      "/transactions/sum-by-сategories",
+      { params },
     );
     return data;
   },

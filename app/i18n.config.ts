@@ -1,5 +1,5 @@
-export default {
+export default defineI18nConfig(() => ({
   legacy: false,
-  locale: "ua",
+  locale: "uk",
   fallbackLocale: "en",
-};
+}));

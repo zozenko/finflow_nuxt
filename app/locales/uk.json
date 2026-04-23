@@ -1,0 +1,170 @@
+{
+  "account": {
+    "types": {
+      "cash": "Готівка",
+      "card": "Картка",
+      "savings": "Заощадження",
+      "credit": "Кредит"
+    },
+    "groups_placeholder": "Тут будуть групи",
+    "delete_confirm_title": "Видалити акаунт?",
+    "delete_confirm_message": "Ви дійсно хочете видалити акаунт \"{name}\"? Усі пов'язані дані буде втрачено.",
+    "create_title": "Створення акаунта",
+    "edit_title": "Редагування акаунта",
+    "no_transactions": "Немає Транзакцій по цьому рахунку",
+    "placeholders": {
+      "name": "Назва акаунта (напр. Готівка або ПриватБанк)"
+    }
+  },
+  "group": {
+    "name_label": "Назва групи",
+    "create_title": "Створити групу",
+    "edit_title": "Редагувати групу",
+    "placeholder_name": "Назва групи",
+    "color_label": "Колір",
+    "icon_label": "Іконка",
+    "categories_count": "Категорій",
+    "no_categories": "Немає категорій у цій групі"
+  },
+  "category": {
+    "create_title": "Створити категорію",
+    "edit_title": "Редагувати категорію",
+    "group_label": "Група",
+    "name_label": "Назва категорії",
+    "placeholder_name": "Наприклад: Продукти, Таксі...",
+    "color_label": "Колір категорії",
+    "icon_label": "Іконка",
+    "no_categories": "Немає категорій у цій групі"
+  },
+  "transaction": {
+    "create_title": "Створити транзакцію",
+    "edit_title": "Редагувати транзакцію",
+    "types": {
+      "expense": "Витрати",
+      "income": "Дохід",
+      "transfer": "Переказ"
+    },
+    "fields": {
+      "account": "Рахунок",
+      "to_account": "Рахунок зарахування",
+      "category": "Категорія",
+      "date": "Дата",
+      "amount": "Сума",
+      "description": "Опис"
+    },
+    "placeholders": {
+      "title": "Назва",
+      "select_account": "Оберіть рахунок",
+      "select_to_account": "Куди переказуємо?",
+      "select_category": "Оберіть категорію",
+      "no_category": "Без категорії",
+      "select_group": "Оберіть групу",
+      "description": "Додати коментар..."
+    }
+  },
+  "myaccounts": {
+    "title": "Мої рахунки",
+    "accounts": "Рахунки",
+    "groups": "Групи витрат",
+    "no_accounts": "У вас ще немає створених акаунтів",
+    "total_balance": "Загальний баланс",
+    "recent_operations": "Останні операції",
+    "view_all": "Дивитись всі",
+    "no_transactions": "Операцій поки немає",
+    "debug_icons": "Бібліотека іконок"
+  },
+  "PieChart": {
+    "all_accounts": "Всі рахунки",
+    "expense_groups": "Групи витрат",
+    "expense_categories": "Категорії витрат",
+    "total": "Всього",
+    "select_group": "Оберіть групу",
+    "amount": "Сума",
+    "sum": "Сума",
+    "unknown_group": "невідома група",
+    "category": "Категорія"
+  },
+  "Lists": {
+    "CategoryList": {
+      "edit": "Редагувати",
+      "delete": "Видалити",
+      "empty": "Немає категорій для цієї групи."
+    },
+    "GroupList": {
+      "edit": "Редагувати",
+      "delete": "Видалити"
+    },
+    "AccountList": {
+      "edit": "Редагувати",
+      "delete": "Видалити",
+      "empty": "Немає створених акаунтів."
+    }
+  },
+  "login": {
+    "title": "Вхід у систему",
+    "login_btn": "Увійти",
+    "no_account": "Немає акаунта?",
+    "register_link": "Зареєструватися",
+    "placeholders": {
+      "login": "Логін",
+      "password": "Пароль"
+    }
+  },
+  "register": {
+    "title": "Реєстрація",
+    "register_btn": "Створити акаунт",
+    "have_account": "Вже є акаунт?",
+    "login_link": "Увійти",
+    "placeholders": {
+      "name": "Ім'я",
+      "email": "Електронна пошта",
+      "password": "Пароль",
+      "confirm_password": "Підтвердіть пароль"
+    },
+    "messages": {
+      "success": "Реєстрація успішна!",
+      "error": "Сталася помилка. Спробуйте ще раз."
+    }
+  },
+  "header": {
+    "greeting": "Привіт",
+    "nav": {
+      "accounts": "Мої рахунки",
+      "transactions": "Транзакції",
+      "statistics": "Статистика"
+    }
+  },
+  "footer": {
+    "made_by": "Зроблено"
+  },
+  "common": {
+    "create": "Створити",
+    "edit": "Редагувати",
+    "delete": "Видалити",
+    "cancel": "Скасувати",
+    "confirm": "Підтвердити",
+    "save": "Зберегти",
+    "loading": "Завантаження...",
+    "logout": "Вийти",
+    "account": "Акаунт",
+    "group": "Групу",
+    "category": "Категорію",
+    "transaction": "Транзакцію",
+    "total_count": "Всього: {count}"
+  },
+  "validation": {
+    "required": "Це поле є обов'язковим",
+    "too_short": "Логін занадто короткий",
+    "too_long": "Перевищено ліміт символів",
+    "password_min": "Пароль має містити не менше 8 символів",
+    "password_uppercase": "Пароль повинен містити хоча б одну велику літеру",
+    "password_number": "Пароль повинен містити хоча б одну цифру",
+    "passwords_mismatch": "Паролі не співпадають",
+    "invalid_email": "Будь ласка, введіть коректну адресу електронної пошти"
+  },
+  "routes": {
+    "home": "Мої рахунки {'|'}",
+    "log": "Вхід {'|'}",
+    "reg": "Реєстрація {'|'}"
+  }
+}

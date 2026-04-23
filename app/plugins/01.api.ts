@@ -28,8 +28,8 @@ export default defineNuxtPlugin(() => {
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("user");
+        const authStore = useAuthStore();
+        authStore.clearAuth();
       }
       return Promise.reject(error);
     },
