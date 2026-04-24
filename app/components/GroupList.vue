@@ -23,24 +23,7 @@ const { groups } = useGroups();
             />
             <span class="font-medium">{{ group.name }}</span>
           </div>
-          <div class="flex items-center gap-2">
-            <UiButton
-              variant="ghost"
-              size="icon"
-              :title="t('Lists.GroupList.edit')"
-              class="hover:text-primary hover:bg-green-50"
-            >
-              <Pencil class="size-4.5" />
-            </UiButton>
-            <UiButton
-              variant="ghost"
-              size="icon"
-              :title="t('Lists.GroupList.delete')"
-              class="hover:text-destructive hover:bg-red-50"
-            >
-              <Trash2 class="size-4.5" />
-            </UiButton>
-          </div>
+          <EntityActions></EntityActions>
         </div>
       </UiAccordionTrigger>
 

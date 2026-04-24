@@ -2,8 +2,10 @@
 import { LogOut } from "lucide-vue-next";
 import { useAuthStore } from "#imports";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
+import CategoryFormModal from "./components/forms/CategoryFormModal.vue";
 const { t } = useI18n();
 const authStore = useAuthStore();
+const modalStore = useModalStore();
 const { logout } = useAuth();
 const navLinks = [
   { name: "header.nav.accounts", path: "/" },
@@ -16,7 +18,7 @@ const navLinks = [
   <div class="flex flex-col h-dvh">
     <header
       v-if="authStore.isAuthenticated"
-      class="bg-section border-border sticky top-0 z-50 border-b shadow-sm"
+      class="bg-section border-border shrink-0 sticky top-0 z-50 border-b shadow-sm"
     >
       <nav
         class="mx-auto max-w-content flex h-16 items-center justify-between px-6"
@@ -74,8 +76,10 @@ const navLinks = [
         <NuxtPage></NuxtPage>
       </div>
     </main>
-    <footer>
-      <div class="max-w-content mx-auto text-center my-2 px-4">
+    <footer class="shrink-0">
+      <div
+        class="max-w-content mx-auto flex items-center justify-center h-10 text-center px-4"
+      >
         <p class="text-sm text-txt-main opacity-70">
           &copy; {{ new Date().getFullYear() }} FinFlow.
           {{ t("footer.made_by") }}
@@ -83,6 +87,11 @@ const navLinks = [
         </p>
       </div>
     </footer>
+    <CategoryFormModal
+      :is-open="true"
+      :editData="null"
+      @success="modalStore.closeCategory"
+    />
     <ClientOnly> <VueQueryDevtools /> </ClientOnly>
   </div>
 </template>

@@ -39,6 +39,8 @@
     "no_categories": "No categories in this group"
   },
   "transaction": {
+    "recent_title": "Recent Transactions",
+    "recent_empty": "No recent transactions found.",
     "create_title": "Create Transaction",
     "edit_title": "Edit Transaction",
     "types": {
@@ -62,6 +64,15 @@
       "no_category": "No category",
       "description": "Add a note...",
       "select_group": "Select group"
+    },
+    "columns": {
+      "date": "Date",
+      "title": "Title",
+      "group": "Group",
+      "category": "Category",
+      "type": "Type",
+      "amount": "Amount",
+      "actions": "Actions"
     }
   },
   "myaccounts": {
@@ -88,19 +99,13 @@
   },
   "Lists": {
     "CategoryList": {
-      "edit": "Edit",
-      "delete": "Delete",
       "empty": "No categories for this group."
     },
-    "GroupList": {
-      "edit": "Edit",
-      "delete": "Delete"
-    },
     "AccountList": {
-      "edit": "Edit",
-      "delete": "Delete",
       "empty": "No accounts created."
-    }
+    },
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "login": {
     "title": "Sign In",
@@ -152,7 +157,11 @@
     "group": "Group",
     "category": "Category",
     "transaction": "Transaction",
-    "total_count": "Total: {count}"
+    "total_count": "Total: {count}",
+    "all": "All",
+    "columns": "Columns",
+    "no_group": "No group",
+    "no_category": "No category"
   },
   "validation": {
     "required": "This field is required",
@@ -167,6 +176,8 @@
   "routes": {
     "home": "My accounts {'|'}",
     "log": "Sign In {'|'}",
-    "reg": "Sign Up {'|'}"
+    "reg": "Sign Up {'|'}",
+    "trans": "Transactions {'|'}",
+    "stats": "Statistics {'|'}"
   }
 }

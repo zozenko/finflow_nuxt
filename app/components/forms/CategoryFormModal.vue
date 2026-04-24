@@ -3,19 +3,16 @@ import { computed } from "vue";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
+import type { Color } from "reka-ui";
 
-// 1. Приймаємо пропси (якщо editData передано - це редагування, інакше - створення)
 const props = defineProps<{
   isOpen: boolean;
   editData?: { id: number; name: string; icon_key: string } | null;
 }>();
 
+const color = ref("#34d399");
 const emit = defineEmits(["update:isOpen", "success"]);
-
-// 2. Визначаємо, який зараз режим
 const isEditMode = computed(() => !!props.editData);
-
-// 3. Єдина Zod схема для обох режимів (правила однакові!)
 const formSchema = toTypedSchema(
   z.object({
     name: z.string().min(2, "Назва має містити мінімум 2 символи").max(50),
@@ -23,14 +20,11 @@ const formSchema = toTypedSchema(
   }),
 );
 
-// 4. Ініціалізуємо VeeValidate
 const { handleSubmit, resetForm, setValues } = useForm({
   validationSchema: formSchema,
-  // Якщо є editData - форма заповниться ними, інакше - будуть порожні
   initialValues: props.editData || { name: "", icon_key: "" },
 });
 
-// Якщо форма відкривається для редагування іншого елемента, оновлюємо значення
 watch(
   () => props.editData,
   (newData) => {
@@ -42,7 +36,6 @@ watch(
   },
 );
 
-// 5. Єдиний обробник відправки
 const onSubmit = handleSubmit(async (values) => {
   try {
     if (isEditMode.value) {
@@ -55,7 +48,6 @@ const onSubmit = handleSubmit(async (values) => {
       console.log("Створюємо нову:", values);
     }
 
-    // Закриваємо модалку і сповіщаємо батьківський компонент
     emit("update:isOpen", false);
     emit("success");
     resetForm();
@@ -107,6 +99,11 @@ const onSubmit = handleSubmit(async (values) => {
             <UiFormMessage />
           </UiFormItem>
         </UiFormField>
+
+        <HueSlider v-model="color" />
+
+        <p>Обраний колір: {{ color }}</p>
+        <div :style="{ backgroundColor: color }">dfsd</div>
 
         <UiDialogFooter class="pt-4">
           <UiButton type="submit">

@@ -15,6 +15,11 @@ export const createTransactionService = (api: AxiosInstance) => ({
     return data;
   },
 
+  async getRecent(): Promise<Transaction[]> {
+    const { data } = await api.get<Transaction[]>("/transactions/recent");
+    return data;
+  },
+
   async create(payload: CreateTransactionData): Promise<Transaction> {
     const { data } = await api.post<Transaction>("/transactions", payload);
     return data;

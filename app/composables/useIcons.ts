@@ -1,40 +1,61 @@
-import { type Component } from 'vue'
-import * as LucideIcons from 'lucide-vue-next'
+import {
+  ShoppingBasket,
+  Utensils,
+  CarFront,
+  Flame,
+  Home,
+  Pill,
+  Gamepad2,
+  Plane,
+  GraduationCap,
+  Dog,
+  Baby,
+  Gift,
+  Shirt,
+  Dumbbell,
+  Briefcase,
+  PiggyBank,
+  TrendingUp,
+  Banknote,
+  CreditCard,
+  Wallet,
+  CircleHelp,
+  type LucideIcon,
+} from "lucide-vue-next";
 
-type LucideLibrary = Record<string, Component>
+const iconMap: Record<string, LucideIcon> = {
+  ShoppingBasket,
+  Utensils,
+  CarFront,
+  Flame,
+  Home,
+  Pill,
+  Gamepad2,
+  Plane,
+  GraduationCap,
+  Dog,
+  Baby,
+  Gift,
+  Shirt,
+  Dumbbell,
+  Briefcase,
+  PiggyBank,
+  TrendingUp,
+  Banknote,
+  CreditCard,
+  Wallet,
+};
 
-export const categoryIconKeys = [
-  'ShoppingBasket',
-  'Utensils',
-  'CarFront',
-  'Flame',
-  'Home',
-  'Pill',
-  'Gamepad2',
-  'Plane',
-  'GraduationCap',
-  'Dog',
-  'Baby',
-  'Gift',
-  'Shirt',
-  'Dumbbell',
-  'Briefcase',
-  'PiggyBank',
-  'TrendingUp',
-  'Banknote',
-  'CreditCard',
-  'Wallet',
-] as const
+export const appIconKeys = Object.keys(iconMap) as Array<keyof typeof iconMap>;
 
-export const getIcon = (name: string): Component => {
-  const icons = LucideIcons as unknown as LucideLibrary
-  const icon = icons[name]
-  return icon || (LucideIcons.CircleHelp as Component)
-}
+export const getIcon = (name: string | null | undefined): LucideIcon => {
+  if (!name) return CircleHelp;
+  return iconMap[name] || CircleHelp;
+};
 
 export function useIcons() {
   return {
     getIcon,
-    iconKeys: categoryIconKeys,
-  }
+    iconKeys: appIconKeys,
+  };
 }

@@ -46,6 +46,10 @@ export const useCategories = () => {
     );
   });
 
+  const getCategoryById = (id: number | null) => {
+    return categoriesQuery.data.value?.find((c) => c.id === id);
+  };
+
   const getCategoriesByGroupId = (groupId: number) =>
     computed(() => {
       return (
@@ -59,6 +63,7 @@ export const useCategories = () => {
     isError: categoriesQuery.isError,
 
     standaloneCategories,
+    getCategoryById,
     getCategoriesByGroupId,
 
     addCategory: addCategoryMutation.mutate,

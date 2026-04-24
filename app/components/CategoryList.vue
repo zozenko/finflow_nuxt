@@ -29,25 +29,7 @@ const categories = getCategoriesByGroupId(props.groupId);
           {{ category.name }}
         </div>
 
-        <div class="flex items-center gap-2">
-          <UiButton
-            variant="ghost"
-            size="icon"
-            :title="t('Lists.CategoryList.edit')"
-            class="hover:text-primary hover:bg-green-50"
-          >
-            <Pencil class="size-4.5" />
-          </UiButton>
-
-          <UiButton
-            variant="ghost"
-            size="icon"
-            :title="t('Lists.CategoryList.delete')"
-            class="hover:text-destructive hover:bg-red-50"
-          >
-            <Trash2 class="size-4.5" />
-          </UiButton>
-        </div>
+        <EntityActions></EntityActions>
       </UiCardContent>
     </UiCard>
 

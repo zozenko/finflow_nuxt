@@ -33,10 +33,16 @@ export const useGroups = () => {
     },
   });
 
+  const getGroupById = (id: number | null) => {
+    return groupsQuery.data.value?.find((c) => c.id === id);
+  };
+
   return {
     groups: groupsQuery.data,
     isLoading: groupsQuery.isPending,
     isError: groupsQuery.isError,
+
+    getGroupById,
 
     addGroup: addGroupMutation.mutate,
     updateGroup: updateGroupMutation.mutate,

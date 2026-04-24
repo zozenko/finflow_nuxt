@@ -15,6 +15,11 @@ export const useTransactions = () => {
     queryFn: $services.transactions.getAll,
   });
 
+  const recentTransactions = useQuery({
+    queryKey: ["recent_transactions"],
+    queryFn: $services.transactions.getRecent,
+  });
+
   const refreshFinancialData = () => {
     queryClient.invalidateQueries({ queryKey: ["transactions"] });
     queryClient.invalidateQueries({ queryKey: ["accounts"] });
@@ -102,6 +107,10 @@ export const useTransactions = () => {
     transactions: transactionsQuery.data,
     isLoading: transactionsQuery.isPending,
     isError: transactionsQuery.isError,
+
+    recentTransactions: recentTransactions.data,
+    isRecentLoading: recentTransactions.isPending,
+    isRecentError: recentTransactions.isError,
 
     getTransactionsByAccountId,
     getTransactionsByCategoryId,

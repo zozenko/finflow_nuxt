@@ -4,7 +4,6 @@ import { Pencil, Trash2 } from "lucide-vue-next";
 const { t } = useI18n();
 const { accounts } = useAccounts();
 
-// Мапа типів акаунтів з їхніми іконками та кольорами
 const accountTypeMap: Record<string, { icon: string; color: string }> = {
   cash: { icon: "Banknote", color: "#FDE68A" },
   card: { icon: "CreditCard", color: "#7DD3FC" },
@@ -39,25 +38,7 @@ const getAccountConfig = (type: string) => {
           </span>
         </div>
 
-        <div class="flex items-center gap-2">
-          <UiButton
-            variant="ghost"
-            size="icon"
-            :title="t('Lists.AccountList.edit')"
-            class="hover:text-primary hover:bg-green-50"
-          >
-            <Pencil class="size-4.5" />
-          </UiButton>
-
-          <UiButton
-            variant="ghost"
-            size="icon"
-            :title="t('Lists.AccountList.delete')"
-            class="hover:text-destructive hover:bg-red-50"
-          >
-            <Trash2 class="size-4.5" />
-          </UiButton>
-        </div>
+        <EntityActions></EntityActions>
       </UiCardContent>
     </UiCard>
 
