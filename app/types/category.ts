@@ -1,15 +1,29 @@
-export interface Category {
-  id: number
-  user_id: number
-  name: string
-  icon_key: string
-  color: string | null
-  group_id: number | null
-  sort_order: number
-  created_at: string
-  updated_at: string
-}
+import { z } from "zod";
 
-export type CreateCategoryData = Omit<Category, 'id' | 'user_id' | 'created_at' | 'updated_at'>
+export const CategorySchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  name: z.string().min(1),
+  icon_key: z.string(),
+  color: z.string().nullable(),
+  group_id: z.coerce.number().nullable(),
+  sort_order: z.number().nullable(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-export type UpdateCategoryData = Partial<CreateCategoryData>
+export type Category = z.infer<typeof CategorySchema>;
+
+export const CreateCategorySchema = CategorySchema.omit({
+  id: true,
+  user_id: true,
+  sort_order: true,
+  created_at: true,
+  updated_at: true,
+});
+
+export type CreateCategoryData = z.infer<typeof CreateCategorySchema>;
+
+export const UpdateCategorySchema = CreateCategorySchema.partial();
+
+export type UpdateCategoryData = z.infer<typeof UpdateCategorySchema>;

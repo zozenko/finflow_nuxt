@@ -1,15 +1,28 @@
-export interface Budget {
-  id: number
-  user_id: number
-  category_id: number | null
-  group_id: number | null
-  amount: number
-  period: 'monthly' | 'weekly' | 'yearly'
-  start_date: string
-  created_at: string
-  updated_at: string
-}
+import { z } from "zod";
 
-export type CreateBudgetData = Omit<Budget, 'id' | 'user_id' | 'created_at' | 'updated_at'>
+export const BudgetSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  category_id: z.number().nullable(),
+  group_id: z.number().nullable(),
+  amount: z.coerce.number(),
+  period: z.enum(["monthly", "weekly", "yearly"]),
+  start_date: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-export type UpdateBudgetData = Partial<CreateBudgetData>
+export type Budget = z.infer<typeof BudgetSchema>;
+
+export const CreateBudgetSchema = BudgetSchema.omit({
+  id: true,
+  user_id: true,
+  created_at: true,
+  updated_at: true,
+});
+
+export type CreateBudgetData = z.infer<typeof CreateBudgetSchema>;
+
+export const UpdateBudgetSchema = CreateBudgetSchema.partial();
+
+export type UpdateBudgetData = z.infer<typeof UpdateBudgetSchema>;

@@ -1,24 +1,47 @@
 import type { AxiosInstance } from "axios";
-import type { Group, CreateGroupData, UpdateGroupData } from "~/types";
+import { toast } from "vue-sonner";
+import {
+  GroupSchema,
+  type Group,
+  type CreateGroupData,
+  type UpdateGroupData,
+} from "~/types/group";
 
-export const createGroupService = (api: AxiosInstance) => ({
-  async getAll(): Promise<Group[]> {
-    const { data } = await api.get<Group[]>("/groups");
-    return data;
-  },
+export const createGroupService = (api: AxiosInstance) => {
+  const { $i18n } = useNuxtApp();
+  const t = $i18n.t;
 
-  async create(payload: CreateGroupData): Promise<Group> {
-    const { data } = await api.post<Group>("/groups", payload);
-    return data;
-  },
+  const ERR_CODE = "[GROUP_SCHEMA_ERR]";
 
-  async update(id: number, payload: UpdateGroupData): Promise<Group> {
-    const { data } = await api.put<Group>(`/groups/${id}`, payload);
-    return data;
-  },
+  return {
+    async getAll(): Promise<Group[]> {
+      const { data } = await api.get("/groups");
+      const res = GroupSchema.array().safeParse(data);
+      if (!res.success) {
+        toast.warning(ERR_CODE, {
+          description: t("notifications.errors.schema_mismatch"),
+        });
+        console.error(ERR_CODE, res.error);
+        return [];
+      }
+      return res.data;
+    },
 
-  async delete(id: number): Promise<{ message: string }> {
-    const { data } = await api.delete<{ message: string }>(`/groups/${id}`);
-    return data;
-  },
-});
+    async create(payload: CreateGroupData): Promise<Group> {
+      const { data } = await api.post("/groups", payload);
+      toast.success(t("notifications.group.created"));
+      return data;
+    },
+
+    async update(id: number, payload: UpdateGroupData): Promise<Group> {
+      const { data } = await api.put(`/groups/${id}`, payload);
+      toast.success(t("notifications.group.updated"));
+      return data;
+    },
+
+    async delete(id: number): Promise<void> {
+      await api.delete(`/groups/${id}`);
+      toast.success(t("notifications.group.deleted"));
+    },
+  };
+};

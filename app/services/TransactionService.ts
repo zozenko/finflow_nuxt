@@ -1,69 +1,107 @@
 import type { AxiosInstance } from "axios";
-import type {
-  Transaction,
-  CreateTransactionData,
-  UpdateTransactionData,
-  SumByGroupsParams,
-  SumByGroupsResponse,
-  SumByCategoriesParams,
-  SumByCategoriesResponse,
+import { toast } from "vue-sonner";
+import {
+  TransactionSchema,
+  SumByGroupsResponseSchema,
+  SumByCategoriesResponseSchema,
+  type Transaction,
+  type CreateTransactionData,
+  type UpdateTransactionData,
+  type SumByGroupsParams,
+  type SumByCategoriesParams,
+  type SumByGroupsResponse,
+  type SumByCategoriesResponse,
 } from "~/types";
 
-export const createTransactionService = (api: AxiosInstance) => ({
-  async getAll(): Promise<Transaction[]> {
-    const { data } = await api.get<Transaction[]>("/transactions");
-    return data;
-  },
+export const createTransactionService = (api: AxiosInstance) => {
+  const { $i18n } = useNuxtApp();
+  const t = $i18n.t;
+  const ERR_CODE = "[TRANSACTION_SCHEMA_ERR]";
 
-  async getRecent(): Promise<Transaction[]> {
-    const { data } = await api.get<Transaction[]>("/transactions/recent");
-    return data;
-  },
+  return {
+    async getAll(): Promise<Transaction[]> {
+      const { data } = await api.get("/transactions");
+      const items = Array.isArray(data) ? data : data?.data || [];
+      const res = TransactionSchema.array().safeParse(items);
+      if (!res.success) {
+        toast.warning(ERR_CODE, {
+          description: t("notifications.errors.schema_mismatch"),
+        });
+        console.error(`${ERR_CODE} [getAll]`, res.error);
+        return [];
+      }
+      return res.data;
+    },
 
-  async create(payload: CreateTransactionData): Promise<Transaction> {
-    const { data } = await api.post<Transaction>("/transactions", payload);
-    return data;
-  },
+    async getRecent(): Promise<Transaction[]> {
+      const { data } = await api.get("/transactions/recent");
+      const items = Array.isArray(data) ? data : data?.data || [];
+      const res = TransactionSchema.array().safeParse(items);
+      if (!res.success) {
+        toast.warning(ERR_CODE, {
+          description: t("notifications.errors.schema_mismatch"),
+        });
+        console.error(`${ERR_CODE} [Recent]`, res.error);
+        return [];
+      }
+      return res.data;
+    },
 
-  async update(
-    id: number,
-    payload: UpdateTransactionData,
-  ): Promise<Transaction> {
-    const { data } = await api.put<Transaction>(`/transactions/${id}`, payload);
-    return data;
-  },
+    async create(payload: CreateTransactionData): Promise<Transaction> {
+      const { data } = await api.post("/transactions", payload);
+      toast.success(t("notifications.transaction.created"));
+      return data;
+    },
 
-  async toggleFavorite(id: number): Promise<{ is_favorite: boolean }> {
-    const { data } = await api.patch<{ is_favorite: boolean }>(
-      `/transactions/${id}/favorite`,
-    );
-    return data;
-  },
+    async update(
+      id: number,
+      payload: UpdateTransactionData,
+    ): Promise<Transaction> {
+      const { data } = await api.put(`/transactions/${id}`, payload);
+      toast.success(t("notifications.transaction.updated"));
+      return data;
+    },
 
-  async getSumByGroups(
-    params: SumByGroupsParams = {},
-  ): Promise<SumByGroupsResponse> {
-    const { data } = await api.get<SumByGroupsResponse>(
-      "/transactions/sum-by-groups",
-      { params },
-    );
-    return data;
-  },
+    async toggleFavorite(id: number): Promise<{ is_favorite: boolean }> {
+      const { data } = await api.patch(`/transactions/${id}/favorite`);
+      return data;
+    },
 
-  async getSumByCategories(
-    params: SumByCategoriesParams,
-  ): Promise<SumByCategoriesResponse> {
-    const { data } = await api.get<SumByCategoriesResponse>(
-      "/transactions/sum-by-сategories",
-      { params },
-    );
-    return data;
-  },
+    async getSumByGroups(
+      params: SumByGroupsParams = {},
+    ): Promise<SumByGroupsResponse | null> {
+      const { data } = await api.get("/transactions/sum-by-groups", { params });
+      const res = SumByGroupsResponseSchema.safeParse(data);
+      if (!res.success) {
+        toast.warning(ERR_CODE, {
+          description: t("notifications.errors.schema_mismatch"),
+        });
+        console.error(`${ERR_CODE} [SumByGroups]`, res.error);
+        return null;
+      }
+      return res.data;
+    },
 
-  async delete(id: number): Promise<{ message: string }> {
-    const { data } = await api.delete<{ message: string }>(
-      `/transactions/${id}`,
-    );
-    return data;
-  },
-});
+    async getSumByCategories(
+      params: SumByCategoriesParams,
+    ): Promise<SumByCategoriesResponse | null> {
+      const { data } = await api.get("/transactions/sum-by-categories", {
+        params,
+      });
+      const res = SumByCategoriesResponseSchema.safeParse(data);
+      if (!res.success) {
+        toast.warning(ERR_CODE, {
+          description: t("notifications.errors.schema_mismatch"),
+        });
+        console.error(`${ERR_CODE} [SumByCategories]`, res.error);
+        return null;
+      }
+      return res.data;
+    },
+
+    async delete(id: number): Promise<void> {
+      await api.delete(`/transactions/${id}`);
+      toast.success(t("notifications.transaction.deleted"));
+    },
+  };
+};

@@ -6,37 +6,23 @@
       "savings": "Savings",
       "credit": "Credit"
     },
-    "groups_placeholder": "Groups will be here",
-    "delete_confirm_title": "Delete account?",
-    "delete_confirm_message": "Are you sure you want to delete \"{name}\"? All related data will be lost.",
     "create_title": "Create Account",
     "edit_title": "Edit Account",
-    "no_transactions": "There are no Transactions on this account",
-    "placeholders": {
-      "name": "Account name (e.g., Cash or Bank)"
-    }
+    "no_transactions": "There are no Transactions on this account"
   },
   "group": {
-    "name_label": "Title Group",
     "create_title": "Create Group",
     "edit_title": "Edit Group",
-    "placeholder_name": "Group name",
-    "color_label": "COLOR",
-    "icon_label": "ICON",
-    "save_btn": "Save",
-    "create_btn": "Create",
     "categories_count": "Categories",
     "no_categories": "No categories in this group"
   },
   "category": {
     "create_title": "Create Category",
     "edit_title": "Edit Category",
-    "group_label": "Group",
-    "name_label": "Category Name",
-    "placeholder_name": "Example: Groceries, Taxi...",
-    "color_label": "Category Color",
-    "icon_label": "Icon",
-    "no_categories": "No categories in this group"
+    "form": {
+      "group_label": "Group",
+      "group_placeholder": "Select group"
+    }
   },
   "transaction": {
     "recent_title": "Recent Transactions",
@@ -56,15 +42,6 @@
       "amount": "Amount",
       "description": "Description"
     },
-    "placeholders": {
-      "title": "Transaction title",
-      "select_account": "Select source account",
-      "select_to_account": "Select destination account",
-      "select_category": "Select category",
-      "no_category": "No category",
-      "description": "Add a note...",
-      "select_group": "Select group"
-    },
     "columns": {
       "date": "Date",
       "title": "Title",
@@ -79,12 +56,7 @@
     "title": "My Accounts",
     "accounts": "Accounts",
     "groups": "Expense groups",
-    "no_accounts": "You don't have any accounts yet",
-    "total_balance": "Total Balance",
-    "recent_operations": "Recent Operations",
-    "view_all": "View All",
-    "no_transactions": "No transactions yet",
-    "debug_icons": "Icon Library Preview"
+    "total_balance": "Total Balance"
   },
   "PieChart": {
     "all_accounts": "All accounts",
@@ -161,7 +133,9 @@
     "all": "All",
     "columns": "Columns",
     "no_group": "No group",
-    "no_category": "No category"
+    "no_category": "No category",
+    "edit_instructions": "Make changes and save.",
+    "create_instructions": "Fill in the fields below to add."
   },
   "validation": {
     "required": "This field is required",
@@ -171,7 +145,10 @@
     "password_uppercase": "Password must contain at least one uppercase letter",
     "password_number": "Password must contain at least one number",
     "passwords_mismatch": "Passwords do not match",
-    "invalid_email": "Please enter a valid email address"
+    "invalid_email": "Please enter a valid email address",
+    "name_min_2": "Name must contain at least 2 characters",
+    "name_max_50": "Name must not exceed 50 characters",
+    "icon_required": "Please select an icon"
   },
   "routes": {
     "home": "My accounts {'|'}",
@@ -179,5 +156,60 @@
     "reg": "Sign Up {'|'}",
     "trans": "Transactions {'|'}",
     "stats": "Statistics {'|'}"
+  },
+  "api": {
+    "errors": {
+      "validation": "Validation Error",
+      "unauthorized": "Session Expired",
+      "server": "Server Error",
+      "network": "Network Error",
+      "unknown": "Something went wrong"
+    },
+    "messages": {
+      "session_expired": "Please log in again.",
+      "check_fields": "Please check the highlighted fields.",
+      "try_later": "Server is down. Please try again later."
+    }
+  },
+  "notifications": {
+    "account": {
+      "created": "Account created successfully",
+      "updated": "Account data updated",
+      "deleted": "Account deleted"
+    },
+    "category": {
+      "created": "Category created successfully",
+      "updated": "Category updated",
+      "deleted": "Category deleted"
+    },
+    "group": {
+      "created": "Group created successfully",
+      "updated": "Group updated",
+      "deleted": "Group deleted"
+    },
+    "transaction": {
+      "created": "Transaction added successfully",
+      "updated": "Transaction updated",
+      "deleted": "Transaction deleted"
+    },
+    "budget": {
+      "created": "Budget created successfully",
+      "updated": "Budget updated",
+      "deleted": "Budget deleted"
+    },
+    "planned_transaction": {
+      "created": "Planned transaction created",
+      "updated": "Planned transaction updated",
+      "deleted": "Planned transaction deleted"
+    },
+    "errors": {
+      "schema_mismatch": "Server data structure mismatch"
+    }
+  },
+  "form": {
+    "name_label": "Name",
+    "name_placeholder": "e.g., Groceries",
+    "icon_label": "Icon",
+    "color_label": "Color"
   }
 }

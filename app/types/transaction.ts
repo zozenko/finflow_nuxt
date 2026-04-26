@@ -1,28 +1,39 @@
-export interface Transaction {
-  id: number;
-  user_id: number;
-  account_id: number;
-  to_account_id: number | null;
-  group_id: number | null;
-  category_id: number | null;
-  planned_transaction_id: number | null;
-  title: string;
-  amount: number;
-  type: "income" | "expense" | "transfer";
-  description: string | null;
-  transaction_date: string;
-  is_favorite: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { z } from "zod";
 
-export type CreateTransactionData = Omit<
-  Transaction,
-  "id" | "user_id" | "created_at" | "updated_at"
->;
+export const TransactionSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  account_id: z.number(),
+  to_account_id: z.number().nullable(),
+  group_id: z.number().nullable(),
+  category_id: z.number().nullable(),
+  planned_transaction_id: z.number().nullable(),
+  title: z.string(),
+  amount: z.coerce.number(),
+  type: z.enum(["income", "expense", "transfer"]),
+  description: z.string().nullable(),
+  transaction_date: z.string(),
+  is_favorite: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-export type UpdateTransactionData = Partial<CreateTransactionData>;
+export type Transaction = z.infer<typeof TransactionSchema>;
 
+export const CreateTransactionSchema = TransactionSchema.omit({
+  id: true,
+  user_id: true,
+  created_at: true,
+  updated_at: true,
+});
+
+export type CreateTransactionData = z.infer<typeof CreateTransactionSchema>;
+
+export const UpdateTransactionSchema = CreateTransactionSchema.partial();
+
+export type UpdateTransactionData = z.infer<typeof UpdateTransactionSchema>;
+
+// --- ТИПИ ТА СХЕМИ ДЛЯ СТАТИСТИКИ ---
 export interface BaseStatsParams {
   date_from?: string;
   date_to?: string;
@@ -36,23 +47,33 @@ export interface SumByCategoriesParams extends BaseStatsParams {
   group_id: number | null;
 }
 
-export interface TransactionGroupStat {
-  groupId: number;
-  amount: number;
-}
+export const PeriodSchema = z.object({
+  from: z.string(),
+  to: z.string(),
+});
 
-export interface TransactionCategoryStat {
-  categoryId: number;
-  amount: number;
-}
+export const TransactionGroupStatSchema = z.object({
+  groupId: z.number(),
+  amount: z.coerce.number(),
+});
 
-export interface StatsResponse<T> {
-  period: {
-    from: string;
-    to: string;
-  };
-  stats: T[];
-}
+export const TransactionCategoryStatSchema = z.object({
+  categoryId: z.number(),
+  amount: z.coerce.number(),
+});
 
-export type SumByGroupsResponse = StatsResponse<TransactionGroupStat>;
-export type SumByCategoriesResponse = StatsResponse<TransactionCategoryStat>;
+export const SumByGroupsResponseSchema = z.object({
+  period: PeriodSchema,
+  stats: z.array(TransactionGroupStatSchema),
+});
+
+export type SumByGroupsResponse = z.infer<typeof SumByGroupsResponseSchema>;
+
+export const SumByCategoriesResponseSchema = z.object({
+  period: PeriodSchema,
+  stats: z.array(TransactionCategoryStatSchema),
+});
+
+export type SumByCategoriesResponse = z.infer<
+  typeof SumByCategoriesResponseSchema
+>;

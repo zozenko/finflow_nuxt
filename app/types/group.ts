@@ -1,14 +1,28 @@
-export interface Group {
-  id: number
-  user_id: number
-  name: string
-  icon_key: string
-  color: string
-  sort_order: number
-  created_at: string
-  updated_at: string
-}
+import { z } from "zod";
 
-export type CreateGroupData = Omit<Group, 'id' | 'user_id' | 'created_at' | 'updated_at'>
+export const GroupSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  name: z.string().min(1),
+  icon_key: z.string(),
+  color: z.string(),
+  sort_order: z.number(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-export type UpdateGroupData = Partial<CreateGroupData>
+export type Group = z.infer<typeof GroupSchema>;
+
+export const CreateGroupSchema = GroupSchema.omit({
+  id: true,
+  user_id: true,
+  sort_order: true,
+  created_at: true,
+  updated_at: true,
+});
+
+export type CreateGroupData = z.infer<typeof CreateGroupSchema>;
+
+export const UpdateGroupSchema = CreateGroupSchema.partial();
+
+export type UpdateGroupData = z.infer<typeof UpdateGroupSchema>;

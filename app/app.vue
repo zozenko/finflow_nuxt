@@ -2,6 +2,7 @@
 import { LogOut } from "lucide-vue-next";
 import { useAuthStore } from "#imports";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
+import "vue-sonner/style.css";
 import CategoryFormModal from "./components/forms/CategoryFormModal.vue";
 const { t } = useI18n();
 const authStore = useAuthStore();
@@ -87,9 +88,11 @@ const navLinks = [
         </p>
       </div>
     </footer>
+    <UiToaster position="top-center" />
     <CategoryFormModal
-      :is-open="true"
+      :is-open="modalStore.categoryModal.isOpen"
       :editData="null"
+      @update:is-open="!$event ? modalStore.closeCategory() : null"
       @success="modalStore.closeCategory"
     />
     <ClientOnly> <VueQueryDevtools /> </ClientOnly>

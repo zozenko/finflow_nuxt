@@ -3,7 +3,7 @@ import { SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import { colord } from "colord";
 
 const props = defineProps<{
-  modelValue: string; // Приймає HEX, наприклад '#ff0000'
+  modelValue?: string | null; // Приймає HEX, наприклад '#ff0000'
 }>();
 
 const emit = defineEmits(["update:modelValue"]);

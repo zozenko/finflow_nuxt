@@ -2,21 +2,20 @@
 import { computed, watch } from "vue";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { CreateCategorySchema, type CreateCategoryData } from "~/types";
+import { CreateGroupSchema, type CreateGroupData } from "~/types";
 import z from "zod";
 
 const props = defineProps<{
   isOpen: boolean;
-  editData?: (CreateCategoryData & { id: number }) | null;
+  editData?: (CreateGroupData & { id: number }) | null;
 }>();
 
 const emit = defineEmits(["update:isOpen", "success"]);
-const { groups } = useGroups();
-const { t } = useI18n();
 
+const { t } = useI18n();
 const formSchema = computed(() =>
   toTypedSchema(
-    CreateCategorySchema.extend({
+    CreateGroupSchema.extend({
       name: z
         .string({ required_error: t("validation.required") })
         .min(2, t("validation.name_min_2"))
@@ -32,7 +31,6 @@ const { handleSubmit, resetForm, setValues } = useForm({
     name: "",
     icon_key: "",
     color: "#34d399",
-    group_id: null,
   },
 });
 
@@ -51,7 +49,6 @@ watch(
 );
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log("submittt");
   try {
     if (isEditMode.value && props.editData) {
       // Виклик API для оновлення (PATCH/PUT)
@@ -91,31 +88,6 @@ const onSubmit = handleSubmit(async (values) => {
       </UiDialogHeader>
 
       <form @submit="onSubmit" class="space-y-4">
-        <UiFormField v-slot="{ componentField }" name="group_id">
-          <UiFormItem>
-            <UiFormLabel>{{ t("category.form.group_label") }}</UiFormLabel>
-            <UiSelect v-bind="componentField">
-              <UiFormControl>
-                <UiSelectTrigger class="w-full">
-                  <UiSelectValue
-                    :placeholder="t('category.form.group_placeholder')"
-                  />
-                </UiSelectTrigger>
-              </UiFormControl>
-              <UiSelectContent class="w-full">
-                <UiSelectItem
-                  v-for="group in groups"
-                  :key="group.id"
-                  :value="group.id"
-                >
-                  {{ group.name }}
-                </UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-
         <UiFormField v-slot="{ componentField }" name="name">
           <UiFormItem>
             <UiFormLabel>{{ t("form.name_label") }}</UiFormLabel>

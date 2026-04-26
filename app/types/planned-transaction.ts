@@ -1,24 +1,39 @@
-export interface PlannedTransaction {
-  id: number
-  user_id: number
-  account_id: number
-  to_account_id: number | null
-  group_id: number | null
-  category_id: number | null
-  title: string
-  amount: number
-  type: 'income' | 'expense' | 'transfer'
-  frequency: 'daily' | 'weekly' | 'monthly' | 'yearly'
-  next_payment_date: string
-  auto_execute: boolean
-  is_active: boolean
-  created_at: string
-  updated_at: string
-}
+import { z } from "zod";
 
-export type CreatePlannedTransactionData = Omit<
-  PlannedTransaction,
-  'id' | 'user_id' | 'created_at' | 'updated_at'
->
+export const PlannedTransactionSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  account_id: z.number(),
+  to_account_id: z.number().nullable(),
+  group_id: z.number().nullable(),
+  category_id: z.number().nullable(),
+  title: z.string(),
+  amount: z.coerce.number(),
+  type: z.enum(["income", "expense", "transfer"]),
+  frequency: z.enum(["daily", "weekly", "monthly", "yearly"]),
+  next_payment_date: z.string(),
+  auto_execute: z.boolean(),
+  is_active: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-export type UpdatePlannedTransactionData = Partial<CreatePlannedTransactionData>
+export type PlannedTransaction = z.infer<typeof PlannedTransactionSchema>;
+
+export const CreatePlannedTransactionSchema = PlannedTransactionSchema.omit({
+  id: true,
+  user_id: true,
+  created_at: true,
+  updated_at: true,
+});
+
+export type CreatePlannedTransactionData = z.infer<
+  typeof CreatePlannedTransactionSchema
+>;
+
+export const UpdatePlannedTransactionSchema =
+  CreatePlannedTransactionSchema.partial();
+
+export type UpdatePlannedTransactionData = z.infer<
+  typeof UpdatePlannedTransactionSchema
+>;
