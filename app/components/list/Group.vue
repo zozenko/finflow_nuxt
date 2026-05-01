@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { Pencil, Trash2 } from "lucide-vue-next";
-
-const { t } = useI18n();
+const modalStore = useModalStore();
 const { groups } = useGroups();
 </script>
 
 <template>
-  <UiAccordion type="multiple">
+  <UiAccordion type="multiple" class="flex flex-col gap-2">
     <UiAccordionItem
       v-for="group in groups"
       :key="group.id"
@@ -18,17 +16,20 @@ const { groups } = useGroups();
           <div class="flex items-center gap-3">
             <component
               :is="getIcon(group.icon_key)"
-              class="w-5 h-5"
+              class="size-6"
               :style="{ color: group.color || '#6B7280' }"
             />
             <span class="font-medium">{{ group.name }}</span>
           </div>
-          <EntityActions></EntityActions>
+          <EntityActions
+            @edit="modalStore.openGroup(group)"
+            @delete="modalStore.openDeleteGroup(group)"
+          />
         </div>
       </UiAccordionTrigger>
 
       <UiAccordionContent class="pb-4">
-        <CategoryList :group-id="group.id" />
+        <ListCategory :group-id="group.id" />
       </UiAccordionContent>
     </UiAccordionItem>
   </UiAccordion>

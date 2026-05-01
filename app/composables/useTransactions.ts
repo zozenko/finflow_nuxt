@@ -1,3 +1,4 @@
+import { computed, unref, type Ref } from "vue";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
 import type {
   CreateTransactionData,
@@ -6,13 +7,40 @@ import type {
   UpdateTransactionData,
 } from "~/types";
 
-export const useTransactions = () => {
+export interface UseTransactionsParams {
+  page: Ref<number>;
+  perPage: Ref<number>;
+  sortKey: Ref<string>;
+  sortOrder: Ref<"asc" | "desc">;
+}
+
+export const useTransactions = (params?: UseTransactionsParams) => {
   const { $services } = useNuxtApp();
   const queryClient = useQueryClient();
 
   const transactionsQuery = useQuery({
-    queryKey: ["transactions"],
-    queryFn: $services.transactions.getAll,
+    queryKey: [
+      "transactions",
+      params
+        ? {
+            page: params.page,
+            perPage: params.perPage,
+            sortKey: params.sortKey,
+            sortOrder: params.sortOrder,
+          }
+        : {},
+    ],
+
+    queryFn: () => {
+      if (!params) return $services.transactions.getAll();
+
+      return $services.transactions.getAll({
+        page: params.page.value,
+        per_page: params.perPage.value,
+        sort_by: params.sortKey.value,
+        sort_dir: params.sortOrder.value,
+      });
+    },
   });
 
   const recentTransactions = useQuery({
@@ -22,7 +50,12 @@ export const useTransactions = () => {
 
   const refreshFinancialData = () => {
     queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["recent_transactions"] });
     queryClient.invalidateQueries({ queryKey: ["accounts"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions-sum-groups"] });
+    queryClient.invalidateQueries({
+      queryKey: ["transactions-sum-categories"],
+    });
   };
 
   const addMutation = useMutation({
@@ -54,11 +87,10 @@ export const useTransactions = () => {
     onSuccess: refreshFinancialData,
   });
 
-  // --- Обчислювальні значення (Getters) ---
   const getTransactionsByAccountId = (accountId: number) =>
     computed(() => {
       return (
-        transactionsQuery.data.value?.filter(
+        transactionsQuery.data.value?.data.filter(
           (t) => t.account_id === accountId,
         ) || []
       );
@@ -67,7 +99,7 @@ export const useTransactions = () => {
   const getTransactionsByCategoryId = (categoryId: number) =>
     computed(() => {
       return (
-        transactionsQuery.data.value?.filter(
+        transactionsQuery.data.value?.data.filter(
           (t) => t.category_id === categoryId,
         ) || []
       );
@@ -76,11 +108,19 @@ export const useTransactions = () => {
   const getTransactionsByGroupId = (categoryIds: number[]) =>
     computed(() => {
       return (
-        transactionsQuery.data.value?.filter(
+        transactionsQuery.data.value?.data.filter(
           (t) => t.group_id !== null && categoryIds.includes(t.group_id),
         ) || []
       );
     });
+
+  const getTransactionById = (id: Ref<number | null | undefined>) => {
+    return useQuery({
+      queryKey: ["transaction", id],
+      queryFn: () => $services.transactions.getById(id.value!),
+      enabled: computed(() => !!id.value),
+    });
+  };
 
   const getSumByGroupsQuery = (
     filters: Ref<SumByGroupsParams> | SumByGroupsParams,
@@ -88,7 +128,7 @@ export const useTransactions = () => {
     return useQuery({
       queryKey: ["transactions-sum-groups", filters],
       queryFn: () => $services.transactions.getSumByGroups(unref(filters)),
-      select: (data) => data.stats,
+      select: (data) => data?.stats ?? [],
     });
   };
 
@@ -99,12 +139,15 @@ export const useTransactions = () => {
       queryKey: ["transactions-sum-categories", filters],
       queryFn: () => $services.transactions.getSumByCategories(unref(filters)),
       enabled: computed(() => !!unref(filters).group_id),
-      select: (data) => data.stats,
+      select: (data) => data?.stats ?? [],
     });
   };
 
   return {
-    transactions: transactionsQuery.data,
+    transactions: computed(() => transactionsQuery.data.value?.data || []),
+    totalPages: computed(() => transactionsQuery.data.value?.last_page || 1),
+    totalItems: computed(() => transactionsQuery.data.value?.total || 0),
+
     isLoading: transactionsQuery.isPending,
     isError: transactionsQuery.isError,
 
@@ -115,6 +158,7 @@ export const useTransactions = () => {
     getTransactionsByAccountId,
     getTransactionsByCategoryId,
     getTransactionsByGroupId,
+    getTransactionById,
     getSumByGroupsQuery,
     getSumByCategoriesQuery,
 

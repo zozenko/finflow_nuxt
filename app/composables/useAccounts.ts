@@ -10,12 +10,9 @@ export const useAccounts = () => {
     queryFn: () => $services.accounts.getAll(),
   });
 
-  const getAccountByIdQuery = (id: MaybeRefOrGetter<number | undefined>) =>
-    useQuery({
-      queryKey: ["accounts", id],
-      queryFn: () => $services.accounts.getById(toValue(id)!),
-      enabled: computed(() => !!toValue(id)),
-    });
+  const getAccountById = (id: number | null) => {
+    return accountsQuery.data.value?.find((c) => c.id === id);
+  };
 
   const addAccountMutation = useMutation({
     mutationFn: (payload: CreateAccountData) =>
@@ -59,7 +56,7 @@ export const useAccounts = () => {
     totalBalance,
 
     fetchAccounts: accountsQuery.refetch,
-    getAccountByIdQuery,
+    getAccountById,
     addAccount: addAccountMutation.mutate,
     updateAccount: updateAccountMutation.mutate,
     deleteAccount: deleteAccountMutation.mutate,

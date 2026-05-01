@@ -26,3 +26,7 @@ export type CreateGroupData = z.infer<typeof CreateGroupSchema>;
 export const UpdateGroupSchema = CreateGroupSchema.partial();
 
 export type UpdateGroupData = z.infer<typeof UpdateGroupSchema>;
+
+export interface DeleteGroupPayload {
+  reassign_to_group_id?: number | null;
+}

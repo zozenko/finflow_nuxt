@@ -1,5 +1,6 @@
 import type { AxiosInstance } from "axios";
 import { toast } from "vue-sonner";
+import type { DeleteGroupPayload } from "~/types";
 import {
   GroupSchema,
   type Group,
@@ -39,8 +40,10 @@ export const createGroupService = (api: AxiosInstance) => {
       return data;
     },
 
-    async delete(id: number): Promise<void> {
-      await api.delete(`/groups/${id}`);
+    async delete(id: number, payload: DeleteGroupPayload): Promise<void> {
+      await api.delete(`/groups/${id}`, {
+        data: payload,
+      });
       toast.success(t("notifications.group.deleted"));
     },
   };

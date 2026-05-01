@@ -18,6 +18,14 @@ export default defineNuxtPlugin(() => {
   api.interceptors.request.use(
     (config) => {
       const auth_token = localStorage.getItem("auth_token");
+
+      const isAuthRoute =
+        config.url?.includes("/login") || config.url?.includes("/register");
+
+      if (!auth_token && !isAuthRoute) {
+        throw new axios.Cancel("Запит скасовано: користувач не авторизований");
+      }
+
       if (auth_token) {
         config.headers.Authorization = `Bearer ${auth_token}`;
       }
@@ -30,6 +38,10 @@ export default defineNuxtPlugin(() => {
   api.interceptors.response.use(
     (response) => response,
     (error) => {
+      if (axios.isCancel(error)) {
+        return Promise.reject(error);
+      }
+
       const status = error.response?.status;
       const data = error.response?.data;
 
@@ -37,9 +49,22 @@ export default defineNuxtPlugin(() => {
         case 401: {
           const authStore = useAuthStore();
           authStore.clearAuth();
-          toast.warning(t("api.errors.unauthorized"), {
-            description: t("api.messages.session_expired"),
-          });
+          const isLoginRequest = error.config?.url?.includes("/login");
+
+          if (isLoginRequest) {
+            toast.error(t("api.errors.login_failed"), {
+              id: "login_failed",
+              description: t("api.messages.invalid_credentials"),
+            });
+          } else {
+            const authStore = useAuthStore();
+            authStore.clearAuth();
+
+            toast.warning(t("api.errors.unauthorized"), {
+              id: "unauthorized",
+              description: t("api.messages.session_expired"),
+            });
+          }
           break;
         }
 

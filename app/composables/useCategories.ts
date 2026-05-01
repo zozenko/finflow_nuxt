@@ -1,9 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import type { CreateCategoryData, UpdateCategoryData } from "~/types";
+import type {
+  CreateCategoryData,
+  DeleteCategoryPayload,
+  UpdateCategoryData,
+} from "~/types";
 
 export const useCategories = () => {
   const { $services } = useNuxtApp();
   const queryClient = useQueryClient();
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ["categories"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["recent_transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions-sum-groups"] });
+    queryClient.invalidateQueries({
+      queryKey: ["transactions-sum-categories"],
+    });
+  };
 
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
@@ -26,16 +39,18 @@ export const useCategories = () => {
       id: number;
       payload: UpdateCategoryData;
     }) => $services.categories.update(id, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
+    onSuccess: refreshData,
   });
 
   const deleteCategoryMutation = useMutation({
-    mutationFn: (id: number) => $services.categories.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: number;
+      payload: DeleteCategoryPayload;
+    }) => $services.categories.delete(id, payload),
+    onSuccess: refreshData,
   });
 
   const standaloneCategories = computed(() => {

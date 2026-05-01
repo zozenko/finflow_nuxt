@@ -3,10 +3,8 @@ import { LogOut } from "lucide-vue-next";
 import { useAuthStore } from "#imports";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import "vue-sonner/style.css";
-import CategoryFormModal from "./components/forms/CategoryFormModal.vue";
 const { t } = useI18n();
 const authStore = useAuthStore();
-const modalStore = useModalStore();
 const { logout } = useAuth();
 const navLinks = [
   { name: "header.nav.accounts", path: "/" },
@@ -64,8 +62,8 @@ const navLinks = [
           <div class="flex items-center gap-2">
             <LanguageSwitcher />
             <UiButton
-              @click="logout"
               class="rounded-full p-0 bg-destructive hover:bg-red-700"
+              @click="logout"
               ><LogOut class="size-5"
             /></UiButton>
           </div>
@@ -74,7 +72,7 @@ const navLinks = [
     </header>
     <main class="flex-1">
       <div class="max-w-content h-full mx-auto px-4">
-        <NuxtPage></NuxtPage>
+        <NuxtPage />
       </div>
     </main>
     <footer class="shrink-0">
@@ -89,12 +87,7 @@ const navLinks = [
       </div>
     </footer>
     <UiToaster position="top-center" />
-    <CategoryFormModal
-      :is-open="modalStore.categoryModal.isOpen"
-      :editData="null"
-      @update:is-open="!$event ? modalStore.closeCategory() : null"
-      @success="modalStore.closeCategory"
-    />
+    <Modal />
     <ClientOnly> <VueQueryDevtools /> </ClientOnly>
   </div>
 </template>

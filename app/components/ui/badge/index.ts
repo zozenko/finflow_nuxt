@@ -17,11 +17,11 @@ export const badgeVariants = cva(
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         income:
-          "border-transparent text-xs bg-primary  font-medium text-primary-foreground [a&]:hover:bg-primary/90",
+          "border-transparent text-xs bg-primary uppercase font-medium text-primary-foreground [a&]:hover:bg-primary/90",
         expense:
           "border-transparent text-xs uppercase bg-destructive font-medium text-primary-foreground [a&]:hover:bg-destructive/90",
         transfer:
-          "border-transparent text-xs bg-background font-medium text-primary-foreground [a&]:hover:bg-background/90",
+          "border-transparent text-xs bg-zinc-500 uppercase font-medium text-primary-foreground [a&]:hover:bg-background/90",
       },
     },
     defaultVariants: {

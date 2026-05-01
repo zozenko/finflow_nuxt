@@ -17,7 +17,7 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  modules: ["@pinia/nuxt", "@nuxtjs/i18n", , "shadcn-nuxt"],
+  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@nuxt/eslint", "shadcn-nuxt"],
 
   i18n: {
     locales: [
@@ -66,6 +66,8 @@ export default defineNuxtConfig({
         "lucide-vue-next",
         "@tanstack/vue-query-devtools",
         "@vue/devtools-api",
+        "vue-sonner",
+        "colord",
       ],
     },
   },

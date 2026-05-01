@@ -11,6 +11,8 @@ import {
   type SumByCategoriesParams,
   type SumByGroupsResponse,
   type SumByCategoriesResponse,
+  type PaginatedTransactions,
+  type GetTransactionsParams,
 } from "~/types";
 
 export const createTransactionService = (api: AxiosInstance) => {
@@ -19,18 +21,28 @@ export const createTransactionService = (api: AxiosInstance) => {
   const ERR_CODE = "[TRANSACTION_SCHEMA_ERR]";
 
   return {
-    async getAll(): Promise<Transaction[]> {
-      const { data } = await api.get("/transactions");
-      const items = Array.isArray(data) ? data : data?.data || [];
+    async getAll(
+      params?: GetTransactionsParams,
+    ): Promise<PaginatedTransactions> {
+      const { data } = await api.get("/transactions", { params });
+      const items = data?.data || [];
       const res = TransactionSchema.array().safeParse(items);
+
       if (!res.success) {
         toast.warning(ERR_CODE, {
           description: t("notifications.errors.schema_mismatch"),
         });
         console.error(`${ERR_CODE} [getAll]`, res.error);
-        return [];
+
+        return { data: [], total: 0, last_page: 1, current_page: 1 };
       }
-      return res.data;
+
+      return {
+        data: res.data,
+        total: data.total || 0,
+        last_page: data.last_page || 1,
+        current_page: data.current_page || 1,
+      };
     },
 
     async getRecent(): Promise<Transaction[]> {
@@ -45,6 +57,11 @@ export const createTransactionService = (api: AxiosInstance) => {
         return [];
       }
       return res.data;
+    },
+
+    async getById(id: number): Promise<Transaction> {
+      const { data } = await api.get(`/transactions/${id}`);
+      return data;
     },
 
     async create(payload: CreateTransactionData): Promise<Transaction> {

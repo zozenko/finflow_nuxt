@@ -5,6 +5,7 @@ export const TRANSACTION_COLUMNS_CONFIG = [
     visible: true,
   },
   { id: "title", label: "transaction.columns.title", visible: true },
+  { id: "account_id", label: "transaction.columns.account", visible: true },
   { id: "group_id", label: "transaction.columns.group", visible: true },
   {
     id: "category_id",

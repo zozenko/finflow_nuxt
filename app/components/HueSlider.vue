@@ -3,26 +3,26 @@ import { SliderRoot, SliderThumb, SliderTrack } from "reka-ui";
 import { colord } from "colord";
 
 const props = defineProps<{
-  modelValue?: string | null; // Приймає HEX, наприклад '#ff0000'
+  modelValue?: string | null;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
-
-// Конвертуємо вхідний HEX у значення Hue (0-360) для слайдера
 const getHueFromHex = (hex: string | null | undefined) => [
-  colord(hex || "#34d399").toHsl().h,
+  colord(hex || "#00b079").toHsl().h,
 ];
 
 const hueValue = ref(getHueFromHex(props.modelValue));
 
-// Коли рухаємо слайдер — відправляємо HEX у батьківський компонент
-watch(hueValue, ([newHue]) => {
-  const hue = newHue ?? 0;
-  const hex = colord({ h: hue, s: 85, l: 50 }).toHex();
-  emit("update:modelValue", hex);
-});
+watch(
+  hueValue,
+  ([newHue]) => {
+    const hue = newHue ?? 0;
+    const hex = colord({ h: hue, s: 80, l: 50 }).toHex();
+    emit("update:modelValue", hex);
+  },
+  { immediate: true },
+);
 
-// Якщо модель змінилася ззовні (наприклад, при скиданні форми) — оновлюємо слайдер
 watch(
   () => props.modelValue,
   (newHex) => {
@@ -36,7 +36,7 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 py-2">
+  <div class="flex flex-col gap-4">
     <SliderRoot
       v-model="hueValue"
       :max="360"

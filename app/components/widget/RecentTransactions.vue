@@ -5,7 +5,9 @@ import { TRANSACTION_COLUMNS_CONFIG } from "~/constants/transaction-columns";
 
 const { getCategoryById } = useCategories();
 const { getGroupById } = useGroups();
+const { getAccountById } = useAccounts();
 const { recentTransactions, isRecentLoading } = useTransactions();
+const modalStore = useModalStore();
 
 const columns = ref([...TRANSACTION_COLUMNS_CONFIG]);
 
@@ -70,11 +72,15 @@ const isVisible = (id: string) =>
             <UiTableHead
               v-for="col in visibleColumns"
               :key="col.id"
-              class="text-center"
               :class="{
+                'w-px whitespace-nowrap': col.id !== 'title',
                 'text-left':
                   col.id === 'title' || col.id === 'transaction_date',
-                'text-right ': col.id === 'amount',
+                'text-right': col.id === 'amount',
+                'text-center':
+                  col.id !== 'title' &&
+                  col.id !== 'transaction_date' &&
+                  col.id !== 'amount',
               }"
             >
               {{ $t(col.label) }}
@@ -85,36 +91,65 @@ const isVisible = (id: string) =>
         <UiTableBody>
           <template v-if="!isRecentLoading">
             <UiTableRow
-              v-for="tx in recentTransactions"
-              :key="tx.id"
+              v-for="transaction in recentTransactions"
+              :key="transaction.id"
               class="h-14"
             >
               <UiTableCell
                 v-if="isVisible('transaction_date')"
                 class="whitespace-nowrap"
               >
-                {{ new Date(tx.transaction_date).toLocaleDateString("uk-UA") }}
+                {{
+                  new Date(transaction.transaction_date).toLocaleDateString(
+                    "uk-UA",
+                  )
+                }}
               </UiTableCell>
 
               <UiTableCell v-if="isVisible('title')">
                 <span
                   class="font-medium whitespace-normal line-clamp-2"
-                  :title="tx.title"
+                  :title="transaction.description || transaction.title"
                 >
-                  {{ tx.title }}
+                  {{ transaction.title }}
                 </span>
               </UiTableCell>
 
-              <UiTableCell v-if="isVisible('group_id')">
+              <UiTableCell v-if="isVisible('account_id')">
                 <div class="flex justify-center">
                   <UiBadge
                     class="font-normal inline-block max-w-25 truncate"
                     :style="{
-                      backgroundColor: getGroupById(tx.group_id)?.color,
+                      backgroundColor: getAccountConfig(
+                        getAccountById(transaction.account_id)?.type,
+                      ).color,
                     }"
                   >
                     {{
-                      getGroupById(tx.group_id)?.name || $t("common.no_group")
+                      getAccountById(transaction.account_id)?.name ||
+                      $t("common.no_group")
+                    }}
+                  </UiBadge>
+                </div>
+              </UiTableCell>
+
+              <UiTableCell v-if="isVisible('group_id')">
+                <div class="flex justify-center">
+                  <div
+                    v-if="transaction.type === 'transfer'"
+                    class="h-0.5 w-8 rounded-full bg-border"
+                  />
+                  <UiBadge
+                    v-else
+                    class="font-normal inline-block max-w-25 truncate"
+                    :style="{
+                      backgroundColor: getGroupById(transaction.group_id)
+                        ?.color,
+                    }"
+                  >
+                    {{
+                      getGroupById(transaction.group_id)?.name ||
+                      $t("common.no_group")
                     }}
                   </UiBadge>
                 </div>
@@ -122,14 +157,20 @@ const isVisible = (id: string) =>
 
               <UiTableCell v-if="isVisible('category_id')">
                 <div class="flex justify-center">
+                  <div
+                    v-if="transaction.type === 'transfer'"
+                    class="h-0.5 w-8 rounded-full bg-border"
+                  />
                   <UiBadge
+                    v-else
                     class="font-normal inline-block max-w-25 truncate"
                     :style="{
-                      backgroundColor: getCategoryById(tx.category_id)?.color,
+                      backgroundColor: getCategoryById(transaction.category_id)
+                        ?.color,
                     }"
                   >
                     {{
-                      getCategoryById(tx.category_id)?.name ||
+                      getCategoryById(transaction.category_id)?.name ||
                       $t("common.no_category")
                     }}
                   </UiBadge>
@@ -138,32 +179,42 @@ const isVisible = (id: string) =>
 
               <UiTableCell v-if="isVisible('type')">
                 <div class="flex justify-center">
-                  <UiBadge :variant="tx.type" class="font-normal">
-                    {{ tx.type }}
+                  <UiBadge :variant="transaction.type" class="font-normal w-20 justify-center">
+                    {{ $t(`transaction.type.${transaction.type}`) }}
                   </UiBadge>
                 </div>
               </UiTableCell>
 
-              <UiTableCell v-if="isVisible('amount')" class="text-right">
+              <UiTableCell
+                v-if="isVisible('amount')"
+                class="text-right whitespace-nowrap"
+              >
                 <div class="flex items-center justify-end gap-1.5 font-bold">
                   <Triangle
                     :class="[
                       'w-3 h-3 fill-current transition-transform',
                       {
-                        'text-primary': tx.type === 'income',
-                        'text-destructive': tx.type === 'expense',
-                        'opacity-0 pointer-events-none': tx.type === 'transfer',
-                        'rotate-180': tx.type === 'expense',
+                        'text-primary':
+                          transaction.type === 'income' ||
+                          (transaction.type === 'transfer' &&
+                            !!transaction.parent_id),
+                        'text-destructive rotate-180':
+                          transaction.type === 'expense' ||
+                          (transaction.type === 'transfer' &&
+                            !transaction.parent_id),
                       },
                     ]"
                   />
-                  {{ tx.amount }} ₴
+                  {{ transaction.amount.toFixed(2) }} ₴
                 </div>
               </UiTableCell>
 
               <UiTableCell v-if="isVisible('actions')">
                 <div class="flex justify-center">
-                  <EntityActions></EntityActions>
+                  <EntityActions
+                    @edit="modalStore.openTransaction(transaction)"
+                    @delete="modalStore.openDeleteTransaction(transaction)"
+                  />
                 </div>
               </UiTableCell>
             </UiTableRow>

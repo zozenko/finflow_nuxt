@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
+import axios from "axios";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 
@@ -26,6 +27,18 @@ const form = useForm({
   validationSchema: formSchema,
 });
 
+watch(error, (newError) => {
+  // axios.isAxiosError — це вбудована функція-запобіжник (Type Guard)
+  if (axios.isAxiosError(newError)) {
+    if (newError.response?.status === 401) {
+      form.setErrors({
+        login: " ",
+        password: t("api.messages.invalid_credentials"),
+      });
+    }
+  }
+});
+
 const onSubmit = form.handleSubmit((values) => {
   login(values);
 });
@@ -41,8 +54,8 @@ useHead({
     </div>
 
     <form
-      @submit="onSubmit"
       class="bg-section w-full max-w-md rounded-2xl p-8 shadow-md"
+      @submit="onSubmit"
     >
       <h1
         class="mb-6 flex items-center justify-center gap-3 text-2xl font-bold"

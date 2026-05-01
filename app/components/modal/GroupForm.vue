@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { CreateCategorySchema, type CreateCategoryData } from "~/types";
+import { CreateGroupSchema, type Group } from "~/types";
 import z from "zod";
 
 const props = defineProps<{
   isOpen: boolean;
-  editData?: (CreateCategoryData & { id: number }) | null;
+  editData?: Group | null;
 }>();
 
-const emit = defineEmits(["update:isOpen", "success"]);
-const { groups } = useGroups();
+const emit = defineEmits(["update:isOpen"]);
+
+const { updateGroup, addGroup } = useGroups();
 const { t } = useI18n();
 
 const formSchema = computed(() =>
   toTypedSchema(
-    CreateCategorySchema.extend({
+    CreateGroupSchema.extend({
       name: z
         .string({ required_error: t("validation.required") })
         .min(2, t("validation.name_min_2"))
@@ -26,48 +26,37 @@ const formSchema = computed(() =>
   ),
 );
 
-const { handleSubmit, resetForm, setValues } = useForm({
+const { handleSubmit, resetForm, setValues, values } = useForm({
   validationSchema: formSchema,
   initialValues: props.editData || {
     name: "",
     icon_key: "",
-    color: "#34d399",
-    group_id: null,
+    color: "#00b079",
   },
 });
 
 const isEditMode = computed(() => !!props.editData);
 
-// Спостерігаємо за змінами props.editData
 watch(
   () => props.editData,
   (newData) => {
-    if (newData) {
-      setValues(newData);
-    } else {
-      resetForm();
-    }
+    if (newData) setValues(newData);
+    else resetForm();
   },
 );
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log("submittt");
   try {
     if (isEditMode.value && props.editData) {
-      // Виклик API для оновлення (PATCH/PUT)
-      // await updateCategory(props.editData.id, values);
-      console.log("Оновлюємо:", props.editData.id, values);
+      await updateGroup({ id: props.editData.id, payload: values });
     } else {
-      // Виклик API для створення (POST)
-      // await createCategory(values);
-      console.log("Створюємо нову:", values);
+      await addGroup(values);
     }
 
     emit("update:isOpen", false);
-    emit("success");
     resetForm();
   } catch (error) {
-    console.error("Помилка збереження", error);
+    console.error("Error saving group:", error);
   }
 });
 </script>
@@ -77,9 +66,7 @@ const onSubmit = handleSubmit(async (values) => {
     <UiDialogContent class="sm:max-w-md">
       <UiDialogHeader>
         <UiDialogTitle>
-          {{
-            isEditMode ? t("category.edit_title") : t("category.create_title")
-          }}
+          {{ isEditMode ? t("group.edit_title") : t("group.create_title") }}
         </UiDialogTitle>
         <UiDialogDescription>
           {{
@@ -90,32 +77,7 @@ const onSubmit = handleSubmit(async (values) => {
         </UiDialogDescription>
       </UiDialogHeader>
 
-      <form @submit="onSubmit" class="space-y-4">
-        <UiFormField v-slot="{ componentField }" name="group_id">
-          <UiFormItem>
-            <UiFormLabel>{{ t("category.form.group_label") }}</UiFormLabel>
-            <UiSelect v-bind="componentField">
-              <UiFormControl>
-                <UiSelectTrigger class="w-full">
-                  <UiSelectValue
-                    :placeholder="t('category.form.group_placeholder')"
-                  />
-                </UiSelectTrigger>
-              </UiFormControl>
-              <UiSelectContent class="w-full">
-                <UiSelectItem
-                  v-for="group in groups"
-                  :key="group.id"
-                  :value="group.id"
-                >
-                  {{ group.name }}
-                </UiSelectItem>
-              </UiSelectContent>
-            </UiSelect>
-            <UiFormMessage />
-          </UiFormItem>
-        </UiFormField>
-
+      <form class="flex flex-col gap-4" @submit="onSubmit">
         <UiFormField v-slot="{ componentField }" name="name">
           <UiFormItem>
             <UiFormLabel>{{ t("form.name_label") }}</UiFormLabel>
@@ -133,7 +95,10 @@ const onSubmit = handleSubmit(async (values) => {
           <UiFormItem>
             <UiFormLabel>{{ t("form.icon_label") }}</UiFormLabel>
             <UiFormControl>
-              <IconPicker v-bind="componentField" />
+              <IconPicker
+                v-bind="componentField"
+                @update:model-value="componentField['onUpdate:modelValue']"
+              />
             </UiFormControl>
             <UiFormMessage />
           </UiFormItem>
@@ -153,7 +118,30 @@ const onSubmit = handleSubmit(async (values) => {
           </UiFormItem>
         </UiFormField>
 
-        <UiDialogFooter class="pt-4">
+        <div>
+          <div class="font-medium text-sm">
+            {{ t("form.preview_label") }}
+          </div>
+          <div class="flex items-center gap-3 mt-3 p-3 rounded-xl border">
+            <div class="flex items-center justify-center">
+              <component
+                :is="getIcon(values.icon_key)"
+                v-if="values.icon_key"
+                class="size-8"
+                :style="{ color: values.color || '#00b079' }"
+              />
+              <div
+                v-else
+                class="size-6 rounded-full bg-white/20 animate-pulse"
+              />
+            </div>
+            <span class="text-lg font-medium truncate">
+              {{ values.name || t("group.form.name_placeholder") }}
+            </span>
+          </div>
+        </div>
+
+        <UiDialogFooter>
           <UiButton type="submit">
             {{ isEditMode ? t("common.save_changes") : t("common.create") }}
           </UiButton>

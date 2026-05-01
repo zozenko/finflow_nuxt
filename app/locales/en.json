@@ -1,27 +1,37 @@
 {
   "account": {
-    "types": {
+    "create_title": "Create Account",
+    "edit_title": "Edit Account",
+    "type": {
       "cash": "Cash",
       "card": "Card",
       "savings": "Savings",
       "credit": "Credit"
     },
-    "create_title": "Create Account",
-    "edit_title": "Edit Account",
-    "no_transactions": "There are no Transactions on this account"
+    "form": {
+      "name_placeholder": "e.g. Revolut",
+      "type_label": "Account Type",
+      "type_placeholder": "Select type"
+    }
   },
   "group": {
     "create_title": "Create Group",
     "edit_title": "Edit Group",
     "categories_count": "Categories",
-    "no_categories": "No categories in this group"
+    "no_categories": "No categories in this group",
+    "form": {
+      "name_placeholder": "Group name"
+    }
   },
   "category": {
     "create_title": "Create Category",
     "edit_title": "Edit Category",
     "form": {
       "group_label": "Group",
-      "group_placeholder": "Select group"
+      "group_placeholder": "Select group",
+      "name_placeholder": "Category name",
+      "preview_editing": "Updating existing category",
+      "preview_new": "New category creation"
     }
   },
   "transaction": {
@@ -29,22 +39,34 @@
     "recent_empty": "No recent transactions found.",
     "create_title": "Create Transaction",
     "edit_title": "Edit Transaction",
-    "types": {
+    "type": {
       "expense": "Expense",
       "income": "Income",
       "transfer": "Transfer"
     },
-    "fields": {
-      "account": "From Account",
-      "to_account": "To Account",
-      "category": "Category",
-      "date": "Date",
-      "amount": "Amount",
-      "description": "Description"
+    "form": {
+      "title_placeholder": "Groceries...",
+      "amount_label": "Amount",
+      "amount_placeholder": "0.00",
+      "type_label": "Type",
+      "type_placeholder": "Select type",
+      "account_label": "Account",
+      "account_placeholder": "Select account",
+      "from_account_label": "From account",
+      "to_account_label": "To account",
+      "to_account_placeholder": "Select receiving account",
+      "group_label": "Group",
+      "group_placeholder": "Select group",
+      "category_label": "Category",
+      "category_placeholder": "Select category",
+      "date_label": "Date",
+      "description_label": "Description",
+      "description_placeholder": "Additional information (optional)"
     },
     "columns": {
       "date": "Date",
       "title": "Title",
+      "account": "Account",
       "group": "Group",
       "category": "Category",
       "type": "Type",
@@ -64,10 +86,18 @@
     "expense_categories": "Expense categories",
     "total": "Total",
     "select_group": "Select group",
-    "amount": "Amount",
+    "amount": "Amount ",
     "sum": "Sum",
     "unknown_group": "unknown group",
-    "category": "Category"
+    "category": "Category",
+    "select_period": "Select period",
+    "period": {
+      "today": "Today",
+      "current_week": "Current week",
+      "current_month": "Current month",
+      "last_7_days": "Last 7 days",
+      "last_30_days": "Last 30 days"
+    }
   },
   "Lists": {
     "CategoryList": {
@@ -135,7 +165,13 @@
     "no_group": "No group",
     "no_category": "No category",
     "edit_instructions": "Make changes and save.",
-    "create_instructions": "Fill in the fields below to add."
+    "save_changes": "Save changes",
+    "create_instructions": "Fill in the fields below to add.",
+    "next": "Next",
+    "previous": "Previous",
+    "rows_per_page": "Rows per page",
+    "page_of": "Page {page} of {totalPages}",
+    "total_items": "Total transactions: "
   },
   "validation": {
     "required": "This field is required",
@@ -148,7 +184,8 @@
     "invalid_email": "Please enter a valid email address",
     "name_min_2": "Name must contain at least 2 characters",
     "name_max_50": "Name must not exceed 50 characters",
-    "icon_required": "Please select an icon"
+    "icon_required": "Please select an icon",
+    "amount_min": "Amount must be greater than zero"
   },
   "routes": {
     "home": "My accounts {'|'}",
@@ -163,11 +200,13 @@
       "unauthorized": "Session Expired",
       "server": "Server Error",
       "network": "Network Error",
+      "login_failed": "Login Failed",
       "unknown": "Something went wrong"
     },
     "messages": {
       "session_expired": "Please log in again.",
       "check_fields": "Please check the highlighted fields.",
+      "invalid_credentials": "You have entered an incorrect email or password.",
       "try_later": "Server is down. Please try again later."
     }
   },
@@ -206,9 +245,32 @@
       "schema_mismatch": "Server data structure mismatch"
     }
   },
+  "deletion": {
+    "confirm": "Delete",
+    "transaction": {
+      "title": "Delete transaction?",
+      "description": "This action cannot be undone. The transaction will be permanently deleted."
+    },
+    "category": {
+      "title": "Delete Category",
+      "description": "Are you sure you want to delete this category? Please choose what to do with associated transactions.",
+      "transfer_label": "Transfer transactions to:",
+      "select_group": "Select a group...",
+      "select_category": "Select a category...",
+      "leave_unassigned": "Delete category and leave transactions unassigned from group and category"
+    },
+    "group": {
+      "title": "Delete Group",
+      "description": "Are you sure you want to delete this group? All categories inside it will also be deleted. Please choose where to transfer the associated transactions.",
+      "transfer_label": "Transfer transactions to another group:",
+      "select_group": "Select a group...",
+      "leave_unassigned": "Delete group and leave transactions unassigned"
+    }
+  },
   "form": {
     "name_label": "Name",
     "name_placeholder": "e.g., Groceries",
+    "preview_label": "Preview",
     "icon_label": "Icon",
     "color_label": "Color"
   }

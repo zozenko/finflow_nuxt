@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Pencil, Trash2 } from "lucide-vue-next";
+const modalStore = useModalStore();
 
 const { t } = useI18n();
 const { getCategoriesByGroupId } = useCategories();
@@ -21,7 +21,7 @@ const categories = getCategoriesByGroupId(props.groupId);
       <UiCardContent class="flex items-center w-full px-4 gap-4">
         <component
           :is="getIcon(category.icon_key)"
-          class="w-5 h-5"
+          class="size-6"
           :style="{ color: category.color || '#6B7280' }"
         />
 
@@ -29,7 +29,10 @@ const categories = getCategoriesByGroupId(props.groupId);
           {{ category.name }}
         </div>
 
-        <EntityActions></EntityActions>
+        <EntityActions
+          @edit="modalStore.openCategory(category)"
+          @delete="modalStore.openDeleteCategory(category)"
+        />
       </UiCardContent>
     </UiCard>
 

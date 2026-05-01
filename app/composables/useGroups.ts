@@ -1,9 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import type { CreateGroupData, UpdateGroupData } from "~/types";
+import type {
+  CreateGroupData,
+  DeleteGroupPayload,
+  UpdateGroupData,
+} from "~/types";
 
 export const useGroups = () => {
   const { $services } = useNuxtApp();
   const queryClient = useQueryClient();
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ["groups"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["recent_transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions-sum-groups"] });
+    queryClient.invalidateQueries({
+      queryKey: ["transactions-sum-categories"],
+    });
+  };
 
   const groupsQuery = useQuery({
     queryKey: ["groups"],
@@ -26,11 +39,14 @@ export const useGroups = () => {
   });
 
   const deleteGroupMutation = useMutation({
-    mutationFn: (id: number) => $services.groups.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-    },
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: number;
+      payload: DeleteGroupPayload;
+    }) => $services.groups.delete(id, payload),
+    onSuccess: refreshData,
   });
 
   const getGroupById = (id: number | null) => {

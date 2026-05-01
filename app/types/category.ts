@@ -27,3 +27,7 @@ export type CreateCategoryData = z.infer<typeof CreateCategorySchema>;
 export const UpdateCategorySchema = CreateCategorySchema.partial();
 
 export type UpdateCategoryData = z.infer<typeof UpdateCategorySchema>;
+
+export interface DeleteCategoryPayload {
+  reassign_to_category_id?: number | null;
+}

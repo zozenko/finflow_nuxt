@@ -1,19 +1,7 @@
 <script setup lang="ts">
-import { Pencil, Trash2 } from "lucide-vue-next";
-
 const { t } = useI18n();
 const { accounts } = useAccounts();
-
-const accountTypeMap: Record<string, { icon: string; color: string }> = {
-  cash: { icon: "Banknote", color: "#FDE68A" },
-  card: { icon: "CreditCard", color: "#7DD3FC" },
-  savings: { icon: "PiggyBank", color: "#6EE7B7" },
-  credit: { icon: "Flame", color: "#FCA5A5" },
-};
-
-const getAccountConfig = (type: string) => {
-  return accountTypeMap[type] || { icon: "Wallet", color: "#6B7280" };
-};
+const modalStore = useModalStore();
 </script>
 
 <template>
@@ -21,24 +9,35 @@ const getAccountConfig = (type: string) => {
     <UiCard
       v-for="account in accounts"
       :key="account.id"
-      class="shadow-sm py-4"
+      class="shadow-sm py-2.5"
     >
       <UiCardContent class="flex items-center w-full gap-4 px-4">
         <div class="flex items-center justify-center">
           <component
             :is="getIcon(getAccountConfig(account.type).icon)"
-            class="w-6 h-6"
+            class="size-6"
             :style="{ color: getAccountConfig(account.type).color }"
           />
         </div>
 
-        <div class="flex-1 flex flex-col">
-          <span class="text-lg font-medium">
-            {{ account.name }}
-          </span>
+        <div class="flex-1 flex flex-col text-lg font-medium">
+          <span>{{ account.name }}</span>
+          <span class="text-sm text-muted-foreground">{{
+            t(`account.type.${account.type}`)
+          }}</span>
         </div>
 
-        <EntityActions></EntityActions>
+        <div class="text-lg font-medium">
+          {{
+            Number(account.balance).toLocaleString("uk-UA", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          }}
+          ₴
+        </div>
+
+        <EntityActions @edit="modalStore.openAccount(account)" />
       </UiCardContent>
     </UiCard>
 

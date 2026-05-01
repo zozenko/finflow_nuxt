@@ -1,27 +1,37 @@
 {
   "account": {
-    "types": {
+    "create_title": "Створення акаунта",
+    "edit_title": "Редагування акаунта",
+    "type": {
       "cash": "Готівка",
       "card": "Картка",
       "savings": "Заощадження",
       "credit": "Кредит"
     },
-    "create_title": "Створення акаунта",
-    "edit_title": "Редагування акаунта",
-    "no_transactions": "Немає Транзакцій по цьому рахунку"
+    "form": {
+      "name_placeholder": "Назва (напр. ПриватБанк)",
+      "type_label": "Тип рахунку",
+      "type_placeholder": "Оберіть тип"
+    }
   },
   "group": {
     "create_title": "Створити групу",
     "edit_title": "Редагувати групу",
     "categories_count": "Категорій",
-    "no_categories": "Немає категорій у цій групі"
+    "no_categories": "Немає категорій у цій групі",
+    "form": {
+      "name_placeholder": "Назва групи"
+    }
   },
   "category": {
     "create_title": "Створити категорію",
     "edit_title": "Редагувати категорію",
     "form": {
       "group_label": "Група",
-      "group_placeholder": "Оберіть групу"
+      "group_placeholder": "Оберіть групу",
+      "name_placeholder": "Назва категорії",
+      "preview_editing": "Оновлення існуючої категорії",
+      "preview_new": "Створення нової категорії"
     }
   },
   "transaction": {
@@ -29,22 +39,34 @@
     "recent_empty": "Немає нещодавніх транзакцій.",
     "create_title": "Створити транзакцію",
     "edit_title": "Редагувати транзакцію",
-    "types": {
-      "expense": "Витрати",
+    "type": {
+      "expense": "Витрата",
       "income": "Дохід",
       "transfer": "Переказ"
     },
-    "fields": {
-      "account": "Рахунок",
-      "to_account": "Рахунок зарахування",
-      "category": "Категорія",
-      "date": "Дата",
-      "amount": "Сума",
-      "description": "Опис"
+    "form": {
+      "title_placeholder": "Купівля продуктів...",
+      "amount_label": "Сума",
+      "amount_placeholder": "0.00",
+      "type_label": "Тип",
+      "type_placeholder": "Оберіть тип",
+      "account_label": "Рахунок",
+      "account_placeholder": "Оберіть рахунок",
+      "from_account_label": "З рахунку",
+      "to_account_label": "На рахунок",
+      "to_account_placeholder": "Оберіть рахунок отримувача",
+      "group_label": "Група",
+      "group_placeholder": "Оберіть групу",
+      "category_label": "Категорія",
+      "category_placeholder": "Оберіть категорію",
+      "date_label": "Дата",
+      "description_label": "Опис",
+      "description_placeholder": "Додаткова інформація (необов'язково)"
     },
     "columns": {
       "date": "Дата",
       "title": "Назва",
+      "account": "Рахунок",
       "group": "Група",
       "category": "Категорія",
       "type": "Тип",
@@ -67,7 +89,15 @@
     "amount": "Сума",
     "sum": "Сума",
     "unknown_group": "невідома група",
-    "category": "Категорія"
+    "category": "Категорія",
+    "select_period": "Оберіть період",
+    "period": {
+      "today": "Сьогодні",
+      "current_week": "Поточний тиждень",
+      "current_month": "Поточний місяць",
+      "last_7_days": "Останні 7 днів",
+      "last_30_days": "Останні 30 днів"
+    }
   },
   "Lists": {
     "CategoryList": {
@@ -135,7 +165,13 @@
     "no_group": "Без групи",
     "no_category": "Без категорії",
     "edit_instructions": "Внесіть зміни та збережіть.",
-    "create_instructions": "Заповніть поля нижче, щоб додати."
+    "save_changes": "Зберегти зміни",
+    "create_instructions": "Заповніть поля нижче, щоб додати.",
+    "next": "Вперед",
+    "previous": "Назад",
+    "rows_per_page": "Рядків на сторінці",
+    "page_of": "Сторінка {page} з {totalPages}",
+    "total_items": "Всього транзакцій: "
   },
   "validation": {
     "required": "Це поле є обов'язковим",
@@ -148,7 +184,8 @@
     "invalid_email": "Будь ласка, введіть коректну адресу електронної пошти",
     "name_min_2": "Назва має містити мінімум 2 символи",
     "name_max_50": "Назва не може перевищувати 50 символів",
-    "icon_required": "Оберіть іконку"
+    "icon_required": "Оберіть іконку",
+    "amount_min": "Сума має бути більшою за нуль"
   },
   "routes": {
     "home": "Мої рахунки {'|'}",
@@ -163,11 +200,13 @@
       "unauthorized": "Сесія завершена",
       "server": "Помилка сервера",
       "network": "Помилка мережі",
-      "unknown": "Щось пішло не так"
+      "unknown": "Щось пішло не так",
+      "login_failed": "Помилка входу"
     },
     "messages": {
       "session_expired": "Будь ласка, увійдіть в акаунт знову.",
       "check_fields": "Перевірте правильність заповнення полів.",
+      "invalid_credentials": "Ви ввели невірний логін або пароль.",
       "try_later": "Сервер не відповідає. Спробуйте пізніше."
     }
   },
@@ -206,9 +245,32 @@
       "schema_mismatch": "Помилка структури даних сервера"
     }
   },
+  "deletion": {
+    "confirm": "Видалити",
+    "transaction": {
+      "title": "Видалити транзакцію?",
+      "description": "Цю дію неможливо скасувати. Транзакція буде видалена назавжди."
+    },
+    "category": {
+      "title": "Видалення категорії",
+      "description": "Ви впевнені, що хочете видалити цю категорію? Будь ласка, оберіть, що робити з пов'язаними транзакціями.",
+      "transfer_label": "Перенести транзакції до:",
+      "select_group": "Оберіть групу...",
+      "select_category": "Оберіть категорію...",
+      "leave_unassigned": "Видалити категорію і залишити транзакції відв'язаними від групи та категорії"
+    },
+    "group": {
+      "title": "Видалення групи",
+      "description": "Ви впевнені, що хочете видалити цю групу? Всі категорії всередині неї також будуть видалені. Будь ласка, оберіть, куди перенести пов'язані транзакції.",
+      "transfer_label": "Перенести транзакції до іншої групи:",
+      "select_group": "Оберіть групу...",
+      "leave_unassigned": "Видалити групу і залишити транзакції відв'язаними"
+    }
+  },
   "form": {
     "name_label": "Назва",
     "name_placeholder": "Наприклад: Продукти",
+    "preview_label": "Попередній перегляд",
     "icon_label": "Іконка",
     "color_label": "Колір"
   }

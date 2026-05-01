@@ -4,6 +4,7 @@ import {
   CategorySchema,
   type Category,
   type CreateCategoryData,
+  type DeleteCategoryPayload,
   type UpdateCategoryData,
 } from "~/types";
 
@@ -50,8 +51,10 @@ export const createCategoryService = (api: AxiosInstance) => {
       return res.data;
     },
 
-    async delete(id: number): Promise<void> {
-      await api.delete(`/categories/${id}`);
+    async delete(id: number, payload: DeleteCategoryPayload): Promise<void> {
+      await api.delete(`/categories/${id}`, {
+        data: payload,
+      });
       toast.success(t("notifications.category.deleted"));
     },
   };
