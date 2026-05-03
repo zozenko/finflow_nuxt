@@ -79,6 +79,7 @@ export const useTransactions = (params?: UseTransactionsParams) => {
     mutationFn: (id: number) => $services.transactions.toggleFavorite(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["recent_transactions"] });
     },
   });
 

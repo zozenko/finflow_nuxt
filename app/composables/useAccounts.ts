@@ -1,9 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import type { CreateAccountData, UpdateAccountData } from "~/types";
+import type {
+  CreateAccountData,
+  DeleteAccountPayload,
+  UpdateAccountData,
+} from "~/types";
 
 export const useAccounts = () => {
   const { $services } = useNuxtApp();
   const queryClient = useQueryClient();
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ["accounts"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["recent_transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions-sum-groups"] });
+    queryClient.invalidateQueries({
+      queryKey: ["transactions-sum-categories"],
+    });
+  };
 
   const accountsQuery = useQuery({
     queryKey: ["accounts"],
@@ -34,11 +47,14 @@ export const useAccounts = () => {
   });
 
   const deleteAccountMutation = useMutation({
-    mutationFn: (id: number) => $services.accounts.delete(id),
-    onSuccess: (_, deletedId) => {
-      queryClient.invalidateQueries({ queryKey: ["accounts"] });
-      queryClient.removeQueries({ queryKey: ["accounts", deletedId] });
-    },
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: number;
+      payload: DeleteAccountPayload;
+    }) => $services.accounts.delete(id, payload),
+    onSuccess: refreshData,
   });
 
   const totalBalance = computed(() => {

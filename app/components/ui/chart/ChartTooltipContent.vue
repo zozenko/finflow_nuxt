@@ -103,7 +103,7 @@ const tooltipLabel = computed(() => {
           <div
             :class="
               cn(
-                'flex flex-1 justify-between leading-none',
+                'flex flex-1 gap-0.5 justify-between leading-none',
                 nestLabel ? 'items-end' : 'items-center',
               )
             "

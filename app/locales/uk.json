@@ -35,7 +35,8 @@
     }
   },
   "transaction": {
-    "recent_title": "Останні операції",
+    "title": "Всі транзакції",
+    "recent_title": "Останні транзакції",
     "recent_empty": "Немає нещодавніх транзакцій.",
     "create_title": "Створити транзакцію",
     "edit_title": "Редагувати транзакцію",
@@ -80,17 +81,32 @@
     "groups": "Групи витрат",
     "total_balance": "Загальний баланс"
   },
-  "PieChart": {
+  "statistics": {
+    "title_for_period": "Статистика за {period}",
+    "expense": "Витрати",
+    "income": "Доходи",
     "all_accounts": "Всі рахунки",
-    "expense_groups": "Групи витрат",
-    "expense_categories": "Категорії витрат",
-    "total": "Всього",
     "select_group": "Оберіть групу",
-    "amount": "Сума",
-    "sum": "Сума",
-    "unknown_group": "невідома група",
-    "category": "Категорія",
     "select_period": "Оберіть період",
+    "filters": {
+      "description": "Налаштуйте параметри для відображення графіків.",
+      "account": "Рахунок",
+      "group": "Група",
+      "period": "Період"
+    },
+    "donut": {
+      "total": "Всього",
+      "amount": "Сума:",
+      "sum": "Сума",
+      "unknown_group": "Невідома група",
+      "category": "Категорія"
+    },
+    "progress": {
+      "income_groups": "Групи доходів",
+      "expense_groups": "Групи витрат",
+      "income_categories": "Категорії доходів",
+      "expense_categories": "Категорії витрат"
+    },
     "period": {
       "today": "Сьогодні",
       "current_week": "Поточний тиждень",
@@ -99,12 +115,21 @@
       "last_30_days": "Останні 30 днів"
     }
   },
+  "PieChart": {
+    "expense_groups": "Групи витрат для: {account}",
+    "income_groups": "Групи доходів для: {account}",
+    "expense_categories": "Категорії витрат у групі: {group}",
+    "income_categories": "Категорії доходів у групі: {group}"
+  },
   "Lists": {
     "CategoryList": {
       "empty": "Немає категорій для цієї групи."
     },
     "AccountList": {
-      "empty": "Немає створених акаунтів."
+      "title": "Рахунки"
+    },
+    "GroupList": {
+      "title": "Групи і категорії"
     },
     "edit": "Редагувати",
     "delete": "Видалити"
@@ -137,6 +162,8 @@
   },
   "header": {
     "greeting": "Привіт",
+    "logout_confirm_title": "Вихід із системи",
+    "logout_confirm_description": "Ви впевнені, що хочете завершити сеанс? Вам доведеться знову ввести логін та пароль для доступу.",
     "nav": {
       "accounts": "Мої рахунки",
       "transactions": "Транзакції",
@@ -147,21 +174,23 @@
     "made_by": "Зроблено"
   },
   "common": {
-    "create": "Створити",
+    "add": "Додати",
     "edit": "Редагувати",
     "delete": "Видалити",
+    "create": "Створити",
     "cancel": "Скасувати",
     "confirm": "Підтвердити",
     "save": "Зберегти",
     "loading": "Завантаження...",
     "logout": "Вийти",
-    "account": "Акаунт",
+    "account": "Рахунок",
     "group": "Групу",
     "category": "Категорію",
     "transaction": "Транзакцію",
     "total_count": "Всього: {count}",
     "all": "Всі",
     "columns": "Колонки",
+    "no_data": "Немає транзакцій",
     "no_group": "Без групи",
     "no_category": "Без категорії",
     "edit_instructions": "Внесіть зміни та збережіть.",
@@ -171,7 +200,10 @@
     "previous": "Назад",
     "rows_per_page": "Рядків на сторінці",
     "page_of": "Сторінка {page} з {totalPages}",
-    "total_items": "Всього транзакцій: "
+    "total_items": "Всього транзакцій: ",
+    "favorite": "Обрані",
+    "filters": "Фільтри",
+    "navigation": "Меню"
   },
   "validation": {
     "required": "Це поле є обов'язковим",
@@ -262,14 +294,24 @@
     "group": {
       "title": "Видалення групи",
       "description": "Ви впевнені, що хочете видалити цю групу? Всі категорії всередині неї також будуть видалені. Будь ласка, оберіть, куди перенести пов'язані транзакції.",
+      "last_group_warning": "Ви не можете видалити останню групу. У системі повинна залишатися хоча б одна активна група.",
       "transfer_label": "Перенести транзакції до іншої групи:",
       "select_group": "Оберіть групу...",
       "leave_unassigned": "Видалити групу і залишити транзакції відв'язаними"
+    },
+    "account": {
+      "title": "Видалити акаунт",
+      "description": "Ви впевнені, що хочете видалити цей акаунт? Оберіть, куди перенести транзакції, або підтвердіть їх видалення.",
+      "last_account_warning": "Ви не можете видалити останній акаунт. У системі повинен залишатися хоча б один активний рахунок.",
+      "transfer_label": "Перенести транзакції до:",
+      "select_account": "Оберіть акаунт",
+      "delete_transactions": "Я розумію, що всі пов'язані транзакції будуть видалені назавжди"
     }
   },
   "form": {
     "name_label": "Назва",
     "name_placeholder": "Наприклад: Продукти",
+    "date_placeholder": "Оберіть дату",
     "preview_label": "Попередній перегляд",
     "icon_label": "Іконка",
     "color_label": "Колір"

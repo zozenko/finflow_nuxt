@@ -35,8 +35,40 @@ function handleClose() {
         <UiAlertDialogDescription>
           {{ $t("deletion.transaction.description") }}
           <template v-if="transaction">
-            <div class="mt-2 font-medium text-foreground italic">
-              {{ transaction.transaction_date }} — {{ transaction.amount }}
+            <div class="mt-4 font-medium flex flex-col gap-2 text-foreground">
+              <div>
+                <span>{{ $t("form.name_label") }}: </span>
+                <span class="italic">{{ transaction.title }}</span>
+              </div>
+              <div>
+                <span>{{ $t("transaction.form.amount_label") }}: </span>
+                <span class="italic">
+                  {{
+                    (transaction.amount ?? 0).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  }}
+                  ₴
+                </span>
+              </div>
+              <div>
+                <span>{{ $t("transaction.form.date_label") }}: </span>
+                <span class="italic">
+                  {{
+                    new Date(transaction.transaction_date).toLocaleString(
+                      undefined,
+                      {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )
+                  }}
+                </span>
+              </div>
             </div>
           </template>
         </UiAlertDialogDescription>

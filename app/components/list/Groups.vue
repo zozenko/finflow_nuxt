@@ -5,6 +5,9 @@ const { groups } = useGroups();
 
 <template>
   <UiAccordion type="multiple" class="flex flex-col gap-2">
+    <h2 class="text-xl font-medium tracking-tight text-foreground">
+      {{ $t("Lists.GroupList.title") }}
+    </h2>
     <UiAccordionItem
       v-for="group in groups"
       :key="group.id"
@@ -21,7 +24,7 @@ const { groups } = useGroups();
             />
             <span class="font-medium">{{ group.name }}</span>
           </div>
-          <EntityActions
+          <SharedEntityActions
             @edit="modalStore.openGroup(group)"
             @delete="modalStore.openDeleteGroup(group)"
           />
@@ -29,7 +32,7 @@ const { groups } = useGroups();
       </UiAccordionTrigger>
 
       <UiAccordionContent class="pb-4">
-        <ListCategory :group-id="group.id" />
+        <ListCategories :group-id="group.id" />
       </UiAccordionContent>
     </UiAccordionItem>
   </UiAccordion>

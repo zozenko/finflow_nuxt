@@ -1,10 +1,9 @@
 <script setup>
-const { t } = useI18n();
 useHead({
-  title: t("routes.stats"),
+  title: $t("routes.stats"),
 });
 </script>
 
 <template>
-  <WidgetPieChart />
+  <Statistic />
 </template>

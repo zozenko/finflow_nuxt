@@ -29,7 +29,7 @@ const categories = getCategoriesByGroupId(props.groupId);
           {{ category.name }}
         </div>
 
-        <EntityActions
+        <SharedEntityActions
           @edit="modalStore.openCategory(category)"
           @delete="modalStore.openDeleteCategory(category)"
         />

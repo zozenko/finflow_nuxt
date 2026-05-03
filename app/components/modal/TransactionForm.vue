@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Star } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 import { CreateTransactionSchema, type Transaction } from "~/types";
+import dayjs from "dayjs";
 
 const props = defineProps<{
   isOpen: boolean;
@@ -73,15 +73,6 @@ const formSchema = computed(() =>
   ),
 );
 
-const formatForDateTimeLocal = (dateInput?: string | null) => {
-  if (!dateInput) {
-    const date = new Date();
-    const offset = date.getTimezoneOffset() * 60000;
-    return new Date(date.getTime() - offset).toISOString().slice(0, 16);
-  }
-  return dateInput.replace(" ", "T").slice(0, 16);
-};
-
 const { handleSubmit, resetForm, setValues, values, errors } = useForm({
   validationSchema: formSchema,
   initialValues: props.editData || {
@@ -92,7 +83,7 @@ const { handleSubmit, resetForm, setValues, values, errors } = useForm({
     to_account_id: null,
     group_id: null,
     category_id: null,
-    transaction_date: formatForDateTimeLocal(),
+    transaction_date: dayjs().utc().format(),
     is_favorite: false,
     description: null,
   },
@@ -101,11 +92,7 @@ const { handleSubmit, resetForm, setValues, values, errors } = useForm({
 const isEditMode = computed(() => !!resolvedEditData.value);
 
 watch(resolvedEditData, (newData) => {
-  if (newData)
-    setValues({
-      ...newData,
-      transaction_date: formatForDateTimeLocal(newData.transaction_date),
-    });
+  if (newData) setValues(newData);
   else resetForm();
 });
 
@@ -134,10 +121,18 @@ const onSubmit = handleSubmit(async (formValues) => {
   }
 });
 
+const hasEnoughAccountsForTransfer = computed(() => {
+  return (accounts.value?.length || 0) >= 2;
+});
+
 const transactionTypes = computed(() => [
   { value: "expense", label: t("transaction.type.expense") },
   { value: "income", label: t("transaction.type.income") },
-  { value: "transfer", label: t("transaction.type.transfer") },
+  {
+    value: "transfer",
+    label: t("transaction.type.transfer"),
+    disabled: !hasEnoughAccountsForTransfer.value,
+  },
 ]);
 
 const filteredCategories = computed(() => {
@@ -219,6 +214,7 @@ const filteredCategories = computed(() => {
                       v-for="type in transactionTypes"
                       :key="type.value"
                       :value="type.value"
+                      :disabled="type.disabled"
                     >
                       {{ type.label }}
                     </UiSelectItem>
@@ -263,6 +259,10 @@ const filteredCategories = computed(() => {
                       v-for="acc in accounts"
                       :key="acc.id"
                       :value="acc.id"
+                      :disabled="
+                        values.type === 'transfer' &&
+                        Number(values.to_account_id) === acc.id
+                      "
                     >
                       {{ acc.name }}
                     </UiSelectItem>
@@ -294,6 +294,7 @@ const filteredCategories = computed(() => {
                       v-for="acc in accounts"
                       :key="acc.id"
                       :value="acc.id"
+                      :disabled="Number(values.account_id) === acc.id"
                     >
                       {{ acc.name }}
                     </UiSelectItem>
@@ -373,7 +374,7 @@ const filteredCategories = computed(() => {
             <UiFormItem class="flex-1">
               <UiFormLabel>{{ t("transaction.form.date_label") }}</UiFormLabel>
               <UiFormControl>
-                <UiInput type="datetime-local" v-bind="componentField" />
+                <SharedDateTimePicker v-bind="componentField" />
               </UiFormControl>
               <UiFormMessage />
             </UiFormItem>
@@ -382,22 +383,10 @@ const filteredCategories = computed(() => {
           <UiFormField v-slot="{ value, handleChange }" name="is_favorite">
             <UiFormItem class="pb-0.5">
               <UiFormControl>
-                <UiButton
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  class="bg-background"
-                  @click="handleChange(!value)"
-                >
-                  <Star
-                    class="size-6 transition-colors"
-                    :class="
-                      value
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-muted-foreground'
-                    "
-                  />
-                </UiButton>
+                <TransactionFavoriteToggle
+                  :model-value="value ?? false"
+                  @update:model-value="handleChange"
+                />
               </UiFormControl>
             </UiFormItem>
           </UiFormField>

@@ -25,3 +25,7 @@ export type CreateAccountData = z.infer<typeof CreateAccountSchema>;
 export const UpdateAccountSchema = CreateAccountSchema.partial();
 
 export type UpdateAccountData = z.infer<typeof UpdateAccountSchema>;
+
+export interface DeleteAccountPayload {
+  reassign_to_account_id?: number | null;
+}

@@ -56,20 +56,20 @@ useHead({
     class="bg-main flex min-h-screen flex-col items-center justify-center px-4"
   >
     <div class="fixed top-6 right-6">
-      <LanguageSwitcher />
+      <HeaderLanguageSwitcher />
     </div>
 
     <form
-      @submit="onSubmit"
       class="bg-section w-full max-w-md rounded-2xl p-8 shadow-md"
+      @submit="onSubmit"
     >
       <h1
         class="mb-6 flex items-center justify-center gap-3 text-2xl font-bold"
       >
         <img src="~/assets/images/logo.svg" alt="Logo" class="h-8 w-8" />
-        <span class="text-txt-main tracking-tight">{{
-          t("register.title")
-        }}</span>
+        <span class="text-txt-main tracking-tight">
+          {{ t("register.title") }}
+        </span>
       </h1>
 
       <div class="mb-6 space-y-4">

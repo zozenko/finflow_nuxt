@@ -10,6 +10,7 @@ import {
   ChevronRight,
 } from "lucide-vue-next";
 import { TRANSACTION_COLUMNS_CONFIG } from "~/constants/transaction-columns";
+import dayjs from "dayjs";
 
 const { getCategoryById } = useCategories();
 const { getGroupById } = useGroups();
@@ -22,7 +23,14 @@ const perPage = ref(10);
 const sortKey = ref<string>("transaction_date");
 const sortOrder = ref<"asc" | "desc">("desc");
 
-const { transactions, isLoading, totalPages, totalItems } = useTransactions({
+const {
+  transactions,
+  isLoading,
+  totalPages,
+  totalItems,
+  toggleFavorite,
+  isToggling,
+} = useTransactions({
   page,
   perPage,
   sortKey,
@@ -50,20 +58,16 @@ const isVisible = (id: string) =>
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 mt-5">
+  <div class="flex flex-col gap-4 mt-4">
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-semibold">
-        {{ $t("transaction.recent_title") }}
+        {{ $t("transaction.title") }}
       </h2>
 
       <div class="flex items-center gap-2">
         <UiDropdownMenu>
           <UiDropdownMenuTrigger as-child>
-            <UiButton
-              variant="outline"
-              size="sm"
-              class="flex items-center gap-2"
-            >
+            <UiButton variant="outline" class="flex items-center gap-2">
               <Settings2 class="w-4 h-4" />
               <span class="hidden sm:inline">{{ $t("common.columns") }}</span>
             </UiButton>
@@ -139,11 +143,17 @@ const isVisible = (id: string) =>
                 v-if="isVisible('transaction_date')"
                 class="whitespace-nowrap"
               >
-                {{
-                  new Date(transaction.transaction_date).toLocaleDateString(
-                    "uk-UA",
-                  )
-                }}
+                <div class="flex flex-col items-center">
+                  <span class="text-sm">
+                    {{
+                      dayjs(transaction.transaction_date).format("DD.MM.YYYY")
+                    }}
+                  </span>
+
+                  <span class="text-xs text-muted-foreground">
+                    {{ dayjs(transaction.transaction_date).format("HH:mm") }}
+                  </span>
+                </div>
               </UiTableCell>
 
               <UiTableCell v-if="isVisible('title')">
@@ -251,8 +261,14 @@ const isVisible = (id: string) =>
 
               <UiTableCell v-if="isVisible('actions')">
                 <div class="flex justify-center">
-                  <EntityActions
+                  <SharedEntityActions
                     @edit="modalStore.openTransaction(transaction)"
+                    @delete="modalStore.openDeleteTransaction(transaction)"
+                  />
+                  <TransactionFavoriteToggle
+                    :model-value="transaction.is_favorite ?? false"
+                    :disabled="isToggling"
+                    @update:model-value="toggleFavorite(transaction.id)"
                   />
                 </div>
               </UiTableCell>

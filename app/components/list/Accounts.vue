@@ -6,6 +6,9 @@ const modalStore = useModalStore();
 
 <template>
   <div class="flex flex-col gap-2">
+    <h2 class="text-xl font-medium tracking-tight text-foreground">
+      {{ $t("Lists.AccountList.title") }}
+    </h2>
     <UiCard
       v-for="account in accounts"
       :key="account.id"
@@ -37,15 +40,11 @@ const modalStore = useModalStore();
           ₴
         </div>
 
-        <EntityActions @edit="modalStore.openAccount(account)" />
+        <SharedEntityActions
+          @edit="modalStore.openAccount(account)"
+          @delete="modalStore.openDeleteAccount(account)"
+        />
       </UiCardContent>
     </UiCard>
-
-    <div
-      v-if="!accounts || accounts.length === 0"
-      class="text-sm text-gray-400 py-4 text-center border-2 border-dashed border-gray-200 rounded-lg"
-    >
-      {{ t("Lists.AccountList.empty") }}
-    </div>
   </div>
 </template>

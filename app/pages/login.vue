@@ -28,7 +28,6 @@ const form = useForm({
 });
 
 watch(error, (newError) => {
-  // axios.isAxiosError — це вбудована функція-запобіжник (Type Guard)
   if (axios.isAxiosError(newError)) {
     if (newError.response?.status === 401) {
       form.setErrors({
@@ -50,7 +49,7 @@ useHead({
 <template>
   <div class="bg-main flex h-full flex-col items-center justify-center px-4">
     <div class="fixed top-6 right-6">
-      <LanguageSwitcher />
+      <HeaderLanguageSwitcher />
     </div>
 
     <form

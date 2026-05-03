@@ -41,9 +41,7 @@ export const createGroupService = (api: AxiosInstance) => {
     },
 
     async delete(id: number, payload: DeleteGroupPayload): Promise<void> {
-      await api.delete(`/groups/${id}`, {
-        data: payload,
-      });
+      await api.delete(`/groups/${id}`, { data: payload });
       toast.success(t("notifications.group.deleted"));
     },
   };

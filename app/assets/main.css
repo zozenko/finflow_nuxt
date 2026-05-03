@@ -14,10 +14,6 @@
   --color-hover-main: #52a27d;
   --color-hover-light: #f0f5eb;
   --color-main: #e5e1d9;
-
-  /* Можна також додавати відтінки */
-  /*--color-success-light: #dcfce7;
-  --color-success-dark: #166534;*/
 }
 
 @theme inline {

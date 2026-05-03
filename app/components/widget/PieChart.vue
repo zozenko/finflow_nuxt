@@ -10,7 +10,7 @@ const { getSumByGroupsQuery, getSumByCategoriesQuery } = useTransactions();
 const selectedAccountId = ref<number | null>(null);
 const selectedGroupId = ref<number | null>(null);
 const selectedType = ref<"expense" | "income">("expense");
-const selectedPeriod = ref<string>("current_month");
+const selectedPeriod = ref<string>("last_30_days");
 
 const groupFilters = computed<SumByGroupsParams>(() => ({
   period: selectedPeriod.value,
@@ -39,6 +39,22 @@ const categoryStats = computed(() =>
   })),
 );
 
+const selectedAccountName = computed(() => {
+  if (!selectedAccountId.value) return t("statistics.all_accounts");
+  const account = (accounts.value || []).find(
+    (a) => a.id === selectedAccountId.value,
+  );
+  return account?.name || t("statistics.all_accounts");
+});
+
+const selectedGroupName = computed(() => {
+  if (!selectedGroupId.value) return "";
+  const group = (groups.value || []).find(
+    (g) => g.id === selectedGroupId.value,
+  );
+  return group?.name || "";
+});
+
 watch(
   rawGroupSums,
   (stats) => {
@@ -50,97 +66,36 @@ watch(
 
 <template>
   <div class="flex flex-col items-center gap-4">
-    <div class="flex gap-4">
-      <UiSelect v-model="selectedAccountId">
-        <UiSelectTrigger class="bg-section">
-          <UiSelectValue />
-        </UiSelectTrigger>
-        <UiSelectContent>
-          <UiSelectItem :value="null">{{
-            t("PieChart.all_accounts")
-          }}</UiSelectItem>
-          <UiSelectItem
-            v-for="account in accounts"
-            :key="account.id"
-            :value="account.id"
-          >
-            {{ account.name }}
-          </UiSelectItem>
-        </UiSelectContent>
-      </UiSelect>
-      <UiSelect v-model="selectedGroupId">
-        <UiSelectTrigger class="bg-section">
-          <UiSelectValue :placeholder="t('PieChart.select_group')" />
-        </UiSelectTrigger>
-        <UiSelectContent>
-          <UiSelectItem
-            v-for="group in groups"
-            :key="group.id"
-            :value="group.id"
-          >
-            {{ group.name }}
-          </UiSelectItem>
-        </UiSelectContent>
-      </UiSelect>
-      <UiSelect v-model="selectedPeriod">
-        <UiSelectTrigger class="bg-section">
-          <UiSelectValue :placeholder="t('PieChart.select_period')" />
-        </UiSelectTrigger>
-        <UiSelectContent>
-          <UiSelectItem value="today">{{
-            t("PieChart.period.today")
-          }}</UiSelectItem>
-          <UiSelectItem value="current_week">{{
-            t("PieChart.period.current_week")
-          }}</UiSelectItem>
-          <UiSelectItem value="current_month">{{
-            t("PieChart.period.current_month")
-          }}</UiSelectItem>
-          <UiSelectItem value="last_7_days">{{
-            t("PieChart.period.last_7_days")
-          }}</UiSelectItem>
-          <UiSelectItem value="last_30_days">{{
-            t("PieChart.period.last_30_days")
-          }}</UiSelectItem>
-        </UiSelectContent>
-      </UiSelect>
-      <UiRadioGroup v-model="selectedType" class="flex gap-0">
-        <div>
-          <UiRadioGroupItem
-            id="type-expense"
-            value="expense"
-            class="peer sr-only"
-          />
-          <UiLabel
-            for="type-expense"
-            class="flex h-9 items-center font-medium bg-section justify-center rounded-l-xl border border-r-0 px-4 py-2 transition-colors hover:bg-destructive hover:text-primary-foreground peer-data-[state=checked]:bg-destructive peer-data-[state=checked]:text-primary-foreground cursor-pointer"
-          >
-            {{ t("transaction.type.expense") }}
-          </UiLabel>
-        </div>
-        <div>
-          <UiRadioGroupItem
-            id="type-income"
-            value="income"
-            class="peer sr-only"
-          />
-          <UiLabel
-            for="type-income"
-            class="flex h-9 items-center font-medium bg-section justify-center rounded-r-xl border px-4 py-2 transition-colors hover:bg-primary hover:text-primary-foreground peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
-          >
-            {{ t("transaction.type.income") }}
-          </UiLabel>
-        </div>
-      </UiRadioGroup>
+    <div
+      class="flex flex-col sm:flex-row w-full sm:items-center justify-between gap-4"
+    >
+      <h2 class="text-xl font-medium tracking-tight text-foreground">
+        {{
+          t("statistics.title_for_period", {
+            period: t(`statistics.period.${selectedPeriod}`),
+          })
+        }}
+      </h2>
+
+      <StatisticFilters
+        v-model:account-id="selectedAccountId"
+        v-model:group-id="selectedGroupId"
+        v-model:period="selectedPeriod"
+        v-model:type="selectedType"
+      />
     </div>
-    <div class="grid w-full grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-8">
       <StatisticDonutChart
-        :title="t('PieChart.expense_groups')"
+        :title="
+          t(`PieChart.${selectedType}_groups`, { account: selectedAccountName })
+        "
         :stats="groupStats"
         type="group"
       />
       <StatisticDonutChart
-        :title="t('PieChart.expense_categories')"
+        :title="
+          t(`PieChart.${selectedType}_categories`, { group: selectedGroupName })
+        "
         :stats="categoryStats"
         type="category"
       />

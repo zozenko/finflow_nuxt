@@ -80,7 +80,7 @@ export const createTransactionService = (api: AxiosInstance) => {
     },
 
     async toggleFavorite(id: number): Promise<{ is_favorite: boolean }> {
-      const { data } = await api.patch(`/transactions/${id}/favorite`);
+      const { data } = await api.patch(`/transactions/${id}/toggle-favorite`);
       return data;
     },
 

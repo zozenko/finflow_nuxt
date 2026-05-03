@@ -95,7 +95,7 @@ const onSubmit = handleSubmit(async (values) => {
           <UiFormItem>
             <UiFormLabel>{{ t("form.icon_label") }}</UiFormLabel>
             <UiFormControl>
-              <IconPicker
+              <SharedIconPicker
                 v-bind="componentField"
                 @update:model-value="componentField['onUpdate:modelValue']"
               />
@@ -108,7 +108,7 @@ const onSubmit = handleSubmit(async (values) => {
           <UiFormItem>
             <UiFormLabel>{{ t("form.color_label") }}</UiFormLabel>
             <UiFormControl>
-              <HueSlider
+              <SharedHueSlider
                 v-bind="componentField"
                 :model-value="value"
                 @update:model-value="componentField['onUpdate:modelValue']"

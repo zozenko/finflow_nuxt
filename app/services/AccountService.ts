@@ -4,6 +4,7 @@ import {
   AccountSchema,
   type Account,
   type CreateAccountData,
+  type DeleteAccountPayload,
   type UpdateAccountData,
 } from "~/types";
 
@@ -38,8 +39,8 @@ export const createAccountService = (api: AxiosInstance) => {
       return data;
     },
 
-    async delete(id: number): Promise<void> {
-      await api.delete(`/accounts/${id}`);
+    async delete(id: number, payload: DeleteAccountPayload): Promise<void> {
+      await api.delete(`/accounts/${id}`, { data: payload });
       toast.success(t("notifications.account.deleted"));
     },
 

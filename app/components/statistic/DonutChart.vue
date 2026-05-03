@@ -24,14 +24,22 @@ const { categories } = useCategories();
 
 const entities = computed(() =>
   props.type === "group"
-    ? (groups.value ?? []).map((g) => ({ id: g.id, name: g.name, color: g.color }))
-    : (categories.value ?? []).map((c) => ({ id: c.id, name: c.name, color: c.color })),
+    ? (groups.value ?? []).map((g) => ({
+        id: g.id,
+        name: g.name,
+        color: g.color,
+      }))
+    : (categories.value ?? []).map((c) => ({
+        id: c.id,
+        name: c.name,
+        color: c.color,
+      })),
 );
 
 const fallbackLabel = (id: number) =>
   props.type === "group"
-    ? t("PieChart.unknown_group")
-    : `${t("PieChart.category")} ${id}`;
+    ? t("statistics.donut.unknown_group")
+    : `${t("statistics.donut.category")} ${id}`;
 
 const chartData = computed(() =>
   props.stats.map((item) => {
@@ -47,9 +55,9 @@ const chartData = computed(() =>
 
 const chartConfig = computed<ChartConfig>(() => {
   const config: Record<string, { label: string; color?: string }> = {
-    amount: { label: t("PieChart.amount") },
+    amount: { label: t("statistics.donut.amount") },
   };
-  props.stats.forEach((item, index) => {
+  props.stats.forEach((item) => {
     const entity = entities.value.find((e) => e.id === item.id);
     const key =
       props.type === "group"
@@ -57,7 +65,7 @@ const chartConfig = computed<ChartConfig>(() => {
         : `category_${item.id}`;
     config[key] = {
       label: entity?.name ?? fallbackLabel(item.id),
-      color: entity?.color ?? `var(--chart-${(index % 5) + 1})`,
+      color: entity?.color ?? `var(--chart-1)`,
     };
   });
   return config as ChartConfig;
@@ -70,7 +78,7 @@ const total = computed(() =>
 
 <template>
   <UiCard class="border-none shadow-md">
-    <UiCardHeader class="items-center">
+    <UiCardHeader>
       <UiCardTitle>{{ title }}</UiCardTitle>
     </UiCardHeader>
     <UiCardContent>
@@ -84,7 +92,7 @@ const total = computed(() =>
             :color="(d: any) => d.color || 'var(--chart-1)'"
             :arc-width="30"
             :central-label="total.toLocaleString() + ' ₴'"
-            :central-sub-label="t('PieChart.total')"
+            :central-sub-label="t('statistics.donut.total')"
           />
           <UiChartTooltip
             :triggers="{

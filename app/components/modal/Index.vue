@@ -53,5 +53,12 @@ const modalStore = useModalStore();
       @update:is-open="!$event ? modalStore.closeDeleteGroup() : null"
       @success="modalStore.closeDeleteGroup"
     />
+
+    <ModalAccountDelete
+      :is-open="modalStore.deleteAccountModal.isOpen"
+      :account="modalStore.deleteAccountModal.data"
+      @update:is-open="!$event ? modalStore.closeDeleteAccount() : null"
+      @success="modalStore.closeDeleteAccount"
+    />
   </div>
 </template>

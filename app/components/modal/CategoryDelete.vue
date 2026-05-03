@@ -33,17 +33,9 @@ watch(transferGroupId, () => {
 function handleConfirm() {
   if (!props.category) return;
 
-  console.log("--- DEBUG START ---");
-  console.log("Чекбокс (leaveUnassigned):", leaveUnassigned.value);
-  console.log("Група (transferGroupId):", transferGroupId.value);
-  console.log("Категорія (transferCategoryId):", transferCategoryId.value);
-
   const categoryIdToAssign = transferCategoryId.value
     ? Number(transferCategoryId.value)
     : null;
-
-  console.log("Конвертоване ID для бекенду:", categoryIdToAssign);
-  console.log("--- DEBUG END ---");
 
   deleteCategory(
     {
@@ -85,14 +77,21 @@ function resetState() {
         <UiAlertDialogDescription>
           {{ $t("deletion.category.description") }}
           <template v-if="category">
-            <div class="mt-2 font-medium text-foreground italic">
-              {{ category.name }}
+            <div class="mt-4 font-medium text-foreground">
+              <span>{{ $t("form.name_label") }}: </span>
+              <span class="italic">{{ category.name }}</span>
+            </div>
+            <div class="mt-2 font-medium text-foreground">
+              <span>{{ $t("category.form.group_label") }}: </span>
+              <span class="italic">{{
+                groups?.find((g) => g.id === category?.group_id)?.name
+              }}</span>
             </div>
           </template>
         </UiAlertDialogDescription>
       </UiAlertDialogHeader>
 
-      <div class="my-4 flex flex-col gap-6">
+      <div class="my-4 flex flex-col gap-4">
         <div class="flex flex-col sm:flex-row gap-4">
           <!-- Group Select -->
           <div class="flex-1">
