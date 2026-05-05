@@ -1,3 +1,5 @@
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
 import type { User, AuthResponse } from "~/types";
 
 const getInitialUser = (): User | null => {

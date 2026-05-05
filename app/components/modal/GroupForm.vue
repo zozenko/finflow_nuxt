@@ -48,9 +48,9 @@ watch(
 const onSubmit = handleSubmit(async (values) => {
   try {
     if (isEditMode.value && props.editData) {
-      await updateGroup({ id: props.editData.id, payload: values });
+      updateGroup({ id: props.editData.id, payload: values });
     } else {
-      await addGroup(values);
+      addGroup(values);
     }
 
     emit("update:isOpen", false);

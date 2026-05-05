@@ -1,6 +1,7 @@
 <script setup>
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import "vue-sonner/style.css";
+const isDev = import.meta.dev;
 </script>
 
 <template>
@@ -14,6 +15,6 @@ import "vue-sonner/style.css";
     <Footer />
     <UiToaster position="top-center" />
     <Modal />
-    <ClientOnly> <VueQueryDevtools /> </ClientOnly>
+    <ClientOnly> <VueQueryDevtools v-if="isDev" /> </ClientOnly>
   </div>
 </template>

@@ -2,11 +2,7 @@
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import z from "zod";
-import {
-  AccountSchema,
-  CreateAccountSchema,
-  type Account,
-} from "~/types";
+import { AccountSchema, CreateAccountSchema, type Account } from "~/types";
 
 const props = defineProps<{
   isOpen: boolean;
@@ -55,9 +51,9 @@ watch(
 const onSubmit = handleSubmit(async (values) => {
   try {
     if (isEditMode.value && props.editData) {
-      await updateAccount({ id: props.editData.id, payload: values });
+      updateAccount({ id: props.editData.id, payload: values });
     } else {
-      await addAccount(values);
+      addAccount(values);
     }
     emit("update:isOpen", false);
     emit("success");

@@ -48,8 +48,10 @@ export default defineNuxtPlugin(() => {
       switch (status) {
         case 401: {
           const authStore = useAuthStore();
-          authStore.clearAuth();
           const isLoginRequest = error.config?.url?.includes("/login");
+          if (authStore.isAuthenticated) {
+            authStore.clearAuth();
+          }
 
           if (isLoginRequest) {
             toast.error(t("api.errors.login_failed"), {
@@ -57,9 +59,6 @@ export default defineNuxtPlugin(() => {
               description: t("api.messages.invalid_credentials"),
             });
           } else {
-            const authStore = useAuthStore();
-            authStore.clearAuth();
-
             toast.warning(t("api.errors.unauthorized"), {
               id: "unauthorized",
               description: t("api.messages.session_expired"),

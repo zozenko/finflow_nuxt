@@ -61,7 +61,18 @@ export const createTransactionService = (api: AxiosInstance) => {
 
     async getById(id: number): Promise<Transaction> {
       const { data } = await api.get(`/transactions/${id}`);
-      return data;
+      const item = data?.data !== undefined ? data.data : data;
+      const res = TransactionSchema.safeParse(item);
+
+      if (!res.success) {
+        toast.warning(ERR_CODE, {
+          description: t("notifications.errors.schema_mismatch"),
+        });
+        console.error(`${ERR_CODE} [ByID:${id}]`, res.error);
+        throw new Error(`Schema mismatch for transaction ${id}`);
+      }
+
+      return res.data;
     },
 
     async create(payload: CreateTransactionData): Promise<Transaction> {
